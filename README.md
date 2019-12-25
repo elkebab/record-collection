@@ -2,6 +2,8 @@
 
 Simple app to show someones collection of owned kits. #hobbyproject
 
+### [Demo](https://mokkelgjerd.no/drakter)
+
 ## Setup
 
 This project is bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -15,5 +17,3 @@ Local `.env` file needs an entry like `REACT_APP_DOC_ID=XXX`, where value points
 - Use Redux or React Context to avoid sending data and functions everywhere as props
 - Styling/UX
 - Implement a more sophisticated API, with authentication, etc.
-
-## [Demo](https://mokkelgjerd.no/drakter)
