@@ -9,7 +9,8 @@ import fallbackImage from "./images/fallback-image.png";
 const useStyles = makeStyles({
   card: {
     background: "beige",
-    width: "7rem",
+    minWidth: "6rem",
+    maxWidth: "8rem",
   },
   content: {
     padding: "0.5rem !important", // heahe :)
@@ -28,10 +29,10 @@ export default function KitCard({ kit }) {
         image={kit.imageUrl || fallbackImage}
       />
       <CardContent classes={{ root: classes.content }}>
+        {kit.club || kit.country} <br />
         {kit.playerName && <span>{kit.playerName} </span>}
         {kit.playerNumber && <span>#{kit.playerNumber}</span>}
         {(kit.playerName || kit.playerNumber) && <br />}
-        {kit.club} <br />
         {kit.version}, {kit.year}
       </CardContent>
     </Card>
