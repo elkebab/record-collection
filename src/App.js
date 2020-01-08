@@ -25,9 +25,6 @@ const useStyles = makeStyles({
       marginRight: "1rem",
     },
   },
-  footer: {
-    textAlign: "center",
-  },
 });
 
 const SleeveTypes = { SHORT: "Kort", LONG: "Lang" };
@@ -207,11 +204,6 @@ export default function App() {
 
         <KitsOverview kits={filteredKits} extractedValues={extractedValues} />
       </main>
-
-      <hr></hr>
-      <footer className={classes.footer}>
-        <a href="mailto:kjetil@mokkelgjerd.no">kjetil@mokkelgjerd.no</a>
-      </footer>
     </>
   );
 }

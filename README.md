@@ -1,6 +1,6 @@
 ## General
 
-Simple app to show someones collection of owned kits. #hobbyproject
+Simple app to show collection of peoples' kits.
 
 ### [Demo](https://mokkelgjerd.no/drakter)
 

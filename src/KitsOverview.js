@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import KitCard from "./KitCard";
-import NewKitForm from "./forms/NewKitForm";
+import KitForm from "./forms/KitForm";
 import {
   Button,
   Dialog,
@@ -25,11 +25,16 @@ const useStyles = makeStyles({
 
 export default function KitsOverview({ kits, extractedValues }) {
   const [showModal, setShowModal] = useState(false);
+  const [selectedKit, setSelectedKit] = useState(null);
   const fullscreen = useMediaQuery("(max-width:600px)");
-
   const classes = useStyles();
 
-  const toggleModal = () => setShowModal(!showModal);
+  const toggleModal = () => {
+    if (showModal && selectedKit) {
+      setSelectedKit(null);
+    }
+    setShowModal(!showModal);
+  };
 
   const kitsPerOwner = {};
   kits.forEach(kit => {
@@ -51,9 +56,10 @@ export default function KitsOverview({ kits, extractedValues }) {
       >
         <DialogTitle>Registrer ny drakt</DialogTitle>
         <DialogContent>
-          <NewKitForm
+          <KitForm
             extractedValues={extractedValues}
             closeModal={toggleModal}
+            selectedKit={selectedKit}
           />
         </DialogContent>
       </Dialog>
@@ -72,7 +78,14 @@ export default function KitsOverview({ kits, extractedValues }) {
       </article>
       <article className={classes.kitsOverview}>
         {kits.map((kit, i) => (
-          <KitCard key={i} kit={kit} />
+          <KitCard
+            key={i}
+            kit={kit}
+            onClick={() => {
+              setSelectedKit(kit);
+              toggleModal();
+            }}
+          />
         ))}
       </article>
     </section>

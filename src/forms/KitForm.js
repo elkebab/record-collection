@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import * as Yup from "yup";
-import { addKit } from "../api";
+import { createKit, updateKit } from "../api";
 
 const useStyles = makeStyles({
   field: {
@@ -23,18 +23,19 @@ const useStyles = makeStyles({
   },
 });
 
-const initialValues = {
+const newKitValues = {
   country: "",
   club: "",
   version: "",
-  longSleeve: "false",
+  longSleeve: false,
   year: "",
   playerName: "",
   playerNumber: "",
-  signed: "false",
+  signed: false,
   manufacturer: "",
   imageUrl: "",
   owner: localStorage.getItem("owner") || "",
+  description: "",
 };
 
 const errorMsg = {
@@ -45,7 +46,7 @@ const errorMsg = {
 
 const validationSchema = Yup.object().shape({
   country: Yup.string().required(errorMsg.required),
-  club: Yup.string().required(errorMsg.required),
+  club: Yup.string(),
   version: Yup.string().required(errorMsg.required),
   longSleeve: Yup.bool(),
   year: Yup.string().required(errorMsg.required),
@@ -54,23 +55,25 @@ const validationSchema = Yup.object().shape({
     .min(1, errorMsg.kitNumber)
     .max(99, errorMsg.kitNumber),
   signed: Yup.bool(),
-  manufacturer: Yup.string(),
+  manufacturer: Yup.string().required(errorMsg.required),
   imageUrl: Yup.string().url(errorMsg.invalid),
   owner: Yup.string().required(errorMsg.required),
+  description: Yup.string(),
 });
 
-function NewKitForm({ extractedValues, closeModal }) {
+function NewKitForm({ extractedValues, closeModal, selectedKit }) {
   const classes = useStyles();
 
+  const initialValues = selectedKit ? selectedKit : newKitValues;
+
   const submitKit = async values => {
-    const newKit = {
+    const kit = {
       ...values,
-      playerNumber: values.playerNumber ? parseInt(values.playerNumber) : "",
-      longSleeve: values.longSleeve === "true",
-      signed: values.signed === "true",
+      playerNumber: `${values.playerNumber}`,
     };
 
-    const response = await addKit(newKit);
+    // Update kit if it has an ID. Create new kit otherwise.
+    const response = kit.id ? await updateKit(kit) : await createKit(kit);
     if (response.ok) {
       window.location.reload();
     }
@@ -102,6 +105,7 @@ function NewKitForm({ extractedValues, closeModal }) {
                       type="text"
                       label="Eier"
                       fullWidth
+                      required
                       {...params}
                       {...field}
                     />
@@ -124,13 +128,14 @@ function NewKitForm({ extractedValues, closeModal }) {
                   options={extractedValues.allClubs}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
                   renderInput={params => (
                     <TextField
                       type="text"
                       label="Lag"
                       fullWidth
-                      {...params}
                       {...field}
+                      {...params}
                     />
                   )}
                 />
@@ -150,11 +155,13 @@ function NewKitForm({ extractedValues, closeModal }) {
                   options={extractedValues.allCountries}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
                   renderInput={params => (
                     <TextField
                       type="text"
                       label="Land"
                       fullWidth
+                      required
                       {...params}
                       {...field}
                     />
@@ -190,7 +197,15 @@ function NewKitForm({ extractedValues, closeModal }) {
           <Field name="playerNumber">
             {({ field }) => (
               <div className={classes.field}>
-                <TextField type="number" label="Spillernummer" {...field} />
+                <TextField
+                  type="number"
+                  label="Spillernummer"
+                  inputProps={{
+                    min: "1",
+                    max: "99",
+                  }}
+                  {...field}
+                />
                 <ErrorMessage
                   name={field.name}
                   className={classes.error}
@@ -207,10 +222,12 @@ function NewKitForm({ extractedValues, closeModal }) {
                   options={extractedValues.allVersions}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
                   renderInput={params => (
                     <TextField
                       type="text"
-                      label="Versjon (hjemme, borte)"
+                      label="Versjon"
+                      required
                       fullWidth
                       {...params}
                       {...field}
@@ -229,7 +246,7 @@ function NewKitForm({ extractedValues, closeModal }) {
           <Field name="year">
             {({ field }) => (
               <div className={classes.field}>
-                <TextField type="text" label="År" {...field} />
+                <TextField type="text" label="År" required {...field} />
                 <ErrorMessage
                   name={field.name}
                   className={classes.error}
@@ -246,13 +263,15 @@ function NewKitForm({ extractedValues, closeModal }) {
                   options={extractedValues.allManufacturers}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
                   renderInput={params => (
                     <TextField
                       type="text"
                       label="Leverandør"
                       fullWidth
-                      {...params}
+                      required
                       {...field}
+                      {...params}
                     />
                   )}
                 />
@@ -266,19 +285,23 @@ function NewKitForm({ extractedValues, closeModal }) {
           </Field>
 
           <Field name="signed">
-            {({ field }) => (
+            {({ field: { name, value }, form: { setFieldValue } }) => (
               <div className={classes.field}>
                 <FormLabel component="legend">Signert</FormLabel>
-                <RadioGroup row {...field}>
+                <RadioGroup
+                  row
+                  value={value ? "true" : "false"}
+                  onChange={event =>
+                    setFieldValue(name, event.target.value === "true")
+                  }
+                >
                   <FormControlLabel
-                    value={"false"}
-                    control={<Radio color="primary" />}
+                    control={<Radio color="primary" value="false" />}
                     label="Nei"
                     labelPlacement="start"
                   />
                   <FormControlLabel
-                    value={"true"}
-                    control={<Radio color="primary" />}
+                    control={<Radio color="primary" value="true" />}
                     label="Ja"
                     labelPlacement="start"
                   />
@@ -288,19 +311,23 @@ function NewKitForm({ extractedValues, closeModal }) {
           </Field>
 
           <Field name="longSleeve">
-            {({ field }) => (
+            {({ field: { name, value }, form: { setFieldValue } }) => (
               <div className={classes.field}>
                 <FormLabel component="legend">Ermer</FormLabel>
-                <RadioGroup row {...field}>
+                <RadioGroup
+                  value={value ? "true" : "false"}
+                  onChange={event =>
+                    setFieldValue(name, event.target.value === "true")
+                  }
+                  row
+                >
                   <FormControlLabel
-                    value={"false"}
-                    control={<Radio color="primary" />}
+                    control={<Radio color="primary" value="false" />}
                     label="Kort"
                     labelPlacement="start"
                   />
                   <FormControlLabel
-                    value={"true"}
-                    control={<Radio color="primary" />}
+                    control={<Radio color="primary" value="true" />}
                     label="Lang"
                     labelPlacement="start"
                   />
@@ -317,6 +344,20 @@ function NewKitForm({ extractedValues, closeModal }) {
                   name={field.name}
                   className={classes.error}
                   component="div"
+                />
+              </div>
+            )}
+          </Field>
+
+          <Field name="description">
+            {({ field }) => (
+              <div className={classes.field}>
+                <TextField
+                  type="text"
+                  label="Beskrivelse"
+                  fullWidth
+                  multiline
+                  {...field}
                 />
               </div>
             )}
