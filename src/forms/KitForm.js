@@ -97,8 +97,11 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                   defaultValue={field.value}
                   onChange={(_, value) => {
                     setFieldValue(field.name, value);
-                    // Set owner in localStorage
-                    localStorage.setItem("owner", value);
+                    if (value) {
+                      localStorage.setItem("owner", value);
+                    } else {
+                      localStorage.removeItem("owner");
+                    }
                   }}
                   renderInput={params => (
                     <TextField
