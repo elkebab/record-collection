@@ -5,6 +5,7 @@
   "homepage": "https://mokkelgjerd.no/drakter",
   "dependencies": {
     "@material-ui/core": "^4.8.3",
+    "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.39",
     "formik": "^2.1.1",
     "react": "^16.12.0",

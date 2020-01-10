@@ -16,7 +16,7 @@ import { createKit, updateKit } from "../api";
 
 const useStyles = makeStyles({
   field: {
-    marginTop: "1rem",
+    marginTop: "0.8rem",
   },
   error: {
     color: "red",
@@ -90,7 +90,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
         <Form className={classes.form}>
           <Field name="owner" type="text">
             {({ field }) => (
-              <div className={classes.field}>
+              <>
                 <Autocomplete
                   options={extractedValues.allOwners}
                   freeSolo
@@ -120,7 +120,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                   className={classes.error}
                   component="div"
                 />
-              </div>
+              </>
             )}
           </Field>
 
@@ -339,10 +339,28 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
             )}
           </Field>
 
-          <Field name="imageUrl" className={classes.field}>
+          <Field name="description">
             {({ field }) => (
-              <div>
-                <TextField type="text" label="Bilde-URL" fullWidth {...field} />
+              <TextField
+                type="text"
+                label="Beskrivelse"
+                fullWidth
+                multiline
+                {...field}
+              />
+            )}
+          </Field>
+
+          <Field name="imageUrl">
+            {({ field }) => (
+              <div className={classes.field}>
+                <TextField
+                  type="text"
+                  label="Bilde-URL"
+                  fullWidth
+                  multiline
+                  {...field}
+                />
                 <ErrorMessage
                   name={field.name}
                   className={classes.error}
@@ -351,21 +369,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
               </div>
             )}
           </Field>
-
-          <Field name="description">
-            {({ field }) => (
-              <div className={classes.field}>
-                <TextField
-                  type="text"
-                  label="Beskrivelse"
-                  fullWidth
-                  multiline
-                  {...field}
-                />
-              </div>
-            )}
-          </Field>
-          <DialogActions>
+          <DialogActions className={classes.field}>
             <Button onClick={closeModal}>Avbryt</Button>
             <Button type="submit" variant="contained" color="primary">
               Lagre

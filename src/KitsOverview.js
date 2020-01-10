@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-
-import KitCard from "./KitCard";
-import KitForm from "./forms/KitForm";
 import {
+  makeStyles,
   Button,
   Dialog,
   useMediaQuery,
   DialogTitle,
   DialogContent,
 } from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
+
+import KitCard from "./KitCard";
+import KitForm from "./forms/KitForm";
 
 const useStyles = makeStyles({
   kitsOverview: {
@@ -20,6 +22,11 @@ const useStyles = makeStyles({
     "& > *": {
       margin: "1rem",
     },
+  },
+  closeButton: {
+    position: "absolute",
+    right: "1rem",
+    padding: "0.4rem",
   },
 });
 
@@ -50,12 +57,17 @@ export default function KitsOverview({ kits, extractedValues }) {
       <Dialog
         open={showModal}
         fullScreen={fullscreen}
-        onBackdropClick={toggleModal}
+        onClose={toggleModal}
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle>Registrer ny drakt</DialogTitle>
-        <DialogContent>
+        <DialogTitle>
+          {selectedKit ? "Oppdater drakt" : "Registrer ny drakt"}
+          <IconButton className={classes.closeButton} onClick={toggleModal}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
           <KitForm
             extractedValues={extractedValues}
             closeModal={toggleModal}
