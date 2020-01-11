@@ -36,6 +36,7 @@ export default function KitsOverview({ kits, extractedValues }) {
   const fullscreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
   const [sortedKits, setSortedKits] = useState([]);
+  const [kitsPerOwner, setKitsPerOwner] = useState({});
 
   const toggleModal = () => {
     if (showModal && selectedKit) {
@@ -76,15 +77,18 @@ export default function KitsOverview({ kits, extractedValues }) {
     setSortedKits(sortedKits);
   }, [kits]);
 
-  // Find number of kits per owner
-  const kitsPerOwner = {};
-  kits.forEach(kit => {
-    if (!kitsPerOwner[kit.owner]) {
-      kitsPerOwner[kit.owner] = [kit];
-    } else {
-      kitsPerOwner[kit.owner].push(kit);
-    }
-  });
+  useEffect(() => {
+    // Find number of kits per owner
+    const tempKitsPerOwner = {};
+    kits.forEach(kit => {
+      if (!tempKitsPerOwner[kit.owner]) {
+        tempKitsPerOwner[kit.owner] = [kit];
+      } else {
+        tempKitsPerOwner[kit.owner].push(kit);
+      }
+    });
+    setKitsPerOwner(tempKitsPerOwner);
+  }, [kits]);
 
   return (
     <section>
