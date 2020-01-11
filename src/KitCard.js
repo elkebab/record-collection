@@ -4,6 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
+
 import fallbackImage from "./images/fallback-image.png";
 
 const useStyles = makeStyles({
@@ -31,10 +32,11 @@ export default function KitCard({ kit, onClick }) {
       />
       <CardContent classes={{ root: classes.content }}>
         <b>{kit.club || kit.country}</b> <br />
-        {kit.playerName && <span>{kit.playerName} </span>}
-        {kit.playerNumber && <span>#{kit.playerNumber}</span>}
+        {kit.version}, {kit.year} <br />
+        {kit.playerName && <span>{kit.playerName}</span>}
+        {kit.playerNumber && <span> #{kit.playerNumber}</span>}
         {(kit.playerName || kit.playerNumber) && <br />}
-        {kit.version}, {kit.year}
+        Eier: {kit.owner}
       </CardContent>
     </Card>
   );
