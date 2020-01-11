@@ -12,7 +12,10 @@ import {
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import * as Yup from "yup";
+
 import { createKit, updateKit } from "../api";
+
+const MAX_IMG_SIZE = 800 * 800;
 
 const useStyles = makeStyles({
   field: {
@@ -376,7 +379,13 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                         "Kunne ikke laste bilde fra denne URL-en :'("
                       )
                     }
-                    onLoad={() => setFieldError(field.name, null)}
+                    onLoad={({ target: { width, height } }) => {
+                      if (width * height > MAX_IMG_SIZE) {
+                        setFieldError(field.name, "Bildet er for stort :(");
+                      } else {
+                        setFieldError(field.name, null);
+                      }
+                    }}
                     alt=" "
                   />
                 )}

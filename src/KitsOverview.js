@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   makeStyles,
   Button,
@@ -35,6 +35,7 @@ export default function KitsOverview({ kits, extractedValues }) {
   const [selectedKit, setSelectedKit] = useState(null);
   const fullscreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
+  const [sortedKits, setSortedKits] = useState([]);
 
   const toggleModal = () => {
     if (showModal && selectedKit) {
@@ -43,6 +44,39 @@ export default function KitsOverview({ kits, extractedValues }) {
     setShowModal(!showModal);
   };
 
+  useEffect(() => {
+    // Order kits by year
+    // NOTE: This will only work for kits from the same century!
+    const sortedKits = kits.sort((a, b) => {
+      const yearsA = a.year
+        .split("/")
+        .map(yearString => {
+          if (yearString.length === 4) {
+            yearString = yearString.substring(2);
+          }
+          return parseInt(yearString);
+        })
+        .filter(year => !isNaN(year));
+      const valueA = yearsA.reduce((a, b) => a + b, 0) / yearsA.length;
+
+      const yearsB = b.year
+        .split("/")
+        .map(yearString => {
+          if (yearString.length === 4) {
+            yearString = yearString.substring(2);
+          }
+          return parseInt(yearString);
+        })
+        .filter(year => !isNaN(year));
+      const valueB = yearsB.reduce((a, b) => a + b, 0) / yearsB.length;
+
+      return valueB - valueA;
+    });
+
+    setSortedKits(sortedKits);
+  }, [kits]);
+
+  // Find number of kits per owner
   const kitsPerOwner = {};
   kits.forEach(kit => {
     if (!kitsPerOwner[kit.owner]) {
@@ -89,9 +123,9 @@ export default function KitsOverview({ kits, extractedValues }) {
         </Button>
       </article>
       <article className={classes.kitsOverview}>
-        {kits.map((kit, i) => (
+        {sortedKits.map(kit => (
           <KitCard
-            key={i}
+            key={kit.id}
             kit={kit}
             onClick={() => {
               setSelectedKit(kit);
