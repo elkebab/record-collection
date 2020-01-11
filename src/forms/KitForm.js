@@ -352,7 +352,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="imageUrl">
-            {({ field }) => (
+            {({ field, form: { setFieldError }, meta: { error } }) => (
               <div className={classes.field}>
                 <TextField
                   type="text"
@@ -366,6 +366,20 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                   className={classes.error}
                   component="div"
                 />
+                {field.value && !error && (
+                  <img
+                    className={classes.error}
+                    src={field.value}
+                    onError={() =>
+                      setFieldError(
+                        field.name,
+                        "Kunne ikke laste bilde fra denne URL-en :'("
+                      )
+                    }
+                    onLoad={() => setFieldError(field.name, null)}
+                    alt=" "
+                  />
+                )}
               </div>
             )}
           </Field>
