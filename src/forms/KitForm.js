@@ -127,33 +127,6 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
             )}
           </Field>
 
-          <Field name="club">
-            {({ field }) => (
-              <div className={classes.field}>
-                <Autocomplete
-                  options={extractedValues.allClubs}
-                  freeSolo
-                  onChange={(_, value) => setFieldValue(field.name, value)}
-                  defaultValue={field.value}
-                  renderInput={params => (
-                    <TextField
-                      type="text"
-                      label="Lag"
-                      fullWidth
-                      {...field}
-                      {...params}
-                    />
-                  )}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
-                />
-              </div>
-            )}
-          </Field>
-
           <Field name="country">
             {({ field }) => (
               <div className={classes.field}>
@@ -182,35 +155,23 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
             )}
           </Field>
 
-          <Field name="playerName">
+          <Field name="club">
             {({ field }) => (
               <div className={classes.field}>
-                <TextField
-                  type="text"
-                  label="Spillernavn"
-                  fullWidth
-                  {...field}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
-                />
-              </div>
-            )}
-          </Field>
-
-          <Field name="playerNumber">
-            {({ field }) => (
-              <div className={classes.field}>
-                <TextField
-                  type="number"
-                  label="Spillernummer"
-                  inputProps={{
-                    min: "1",
-                    max: "99",
-                  }}
-                  {...field}
+                <Autocomplete
+                  options={extractedValues.allClubs}
+                  freeSolo
+                  onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
+                  renderInput={params => (
+                    <TextField
+                      type="text"
+                      label="Lag"
+                      fullWidth
+                      {...field}
+                      {...params}
+                    />
+                  )}
                 />
                 <ErrorMessage
                   name={field.name}
@@ -252,7 +213,13 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           <Field name="year">
             {({ field }) => (
               <div className={classes.field}>
-                <TextField type="text" label="År" required {...field} />
+                <TextField
+                  type="text"
+                  label="År"
+                  required
+                  {...field}
+                  helperText='Eksempel: "2015" eller "17/18"'
+                />
                 <ErrorMessage
                   name={field.name}
                   className={classes.error}
@@ -280,6 +247,45 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                       {...params}
                     />
                   )}
+                />
+                <ErrorMessage
+                  name={field.name}
+                  className={classes.error}
+                  component="div"
+                />
+              </div>
+            )}
+          </Field>
+
+          <Field name="playerName">
+            {({ field }) => (
+              <div className={classes.field}>
+                <TextField
+                  type="text"
+                  label="Spillernavn"
+                  fullWidth
+                  {...field}
+                />
+                <ErrorMessage
+                  name={field.name}
+                  className={classes.error}
+                  component="div"
+                />
+              </div>
+            )}
+          </Field>
+
+          <Field name="playerNumber">
+            {({ field }) => (
+              <div className={classes.field}>
+                <TextField
+                  type="number"
+                  label="Spillernummer"
+                  inputProps={{
+                    min: "1",
+                    max: "99",
+                  }}
+                  {...field}
                 />
                 <ErrorMessage
                   name={field.name}
