@@ -52,7 +52,17 @@ const validationSchema = Yup.object().shape({
   club: Yup.string(),
   version: Yup.string().required(errorMsg.required),
   longSleeve: Yup.bool(),
-  year: Yup.string().required(errorMsg.required),
+  year: Yup.string()
+    .test("format", "Ugyldig format", value => {
+      // Check that year is on format YYYY or YYYY/YYYY
+      const years = value && value.split("/");
+      return (
+        years &&
+        years.length <= 2 &&
+        !years.some(year => year.length !== 4 || isNaN(parseInt(year)))
+      );
+    })
+    .required(errorMsg.required),
   playerName: Yup.string(),
   playerNumber: Yup.number()
     .min(1, errorMsg.kitNumber)
@@ -218,7 +228,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                   label="År"
                   required
                   {...field}
-                  helperText='Eksempel: "2015" eller "17/18"'
+                  helperText='Eksempel: "2015" eller "2017/2018"'
                 />
                 <ErrorMessage
                   name={field.name}

@@ -12,6 +12,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import KitCard from "./KitCard";
 import KitForm from "./forms/KitForm";
+import { sortByYear } from "./utils";
 
 const useStyles = makeStyles({
   kitsOverview: {
@@ -47,34 +48,7 @@ export default function KitsOverview({ kits, extractedValues }) {
 
   useEffect(() => {
     // Order kits by year
-    // NOTE: This will only work for kits from the same century!
-    const sortedKits = kits.sort((a, b) => {
-      const yearsA = a.year
-        .split("/")
-        .map(yearString => {
-          if (yearString.length === 4) {
-            yearString = yearString.substring(2);
-          }
-          return parseInt(yearString);
-        })
-        .filter(year => !isNaN(year));
-      const valueA = yearsA.reduce((a, b) => a + b, 0) / yearsA.length;
-
-      const yearsB = b.year
-        .split("/")
-        .map(yearString => {
-          if (yearString.length === 4) {
-            yearString = yearString.substring(2);
-          }
-          return parseInt(yearString);
-        })
-        .filter(year => !isNaN(year));
-      const valueB = yearsB.reduce((a, b) => a + b, 0) / yearsB.length;
-
-      return valueB - valueA;
-    });
-
-    setSortedKits(sortedKits);
+    setSortedKits(sortByYear(kits));
   }, [kits]);
 
   useEffect(() => {

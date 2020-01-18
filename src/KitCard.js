@@ -24,6 +24,13 @@ const useStyles = makeStyles({
 
 export default function KitCard({ kit, onClick }) {
   const classes = useStyles();
+
+  let yearValue = kit.year;
+  if (yearValue.length > 4) {
+    const years = yearValue.split("/");
+    yearValue = `${years[0].slice(2, 4)}/${years[1].slice(2, 4)}`;
+  }
+
   return (
     <Card className={classes.card} onClick={onClick}>
       <CardMedia
@@ -32,7 +39,7 @@ export default function KitCard({ kit, onClick }) {
       />
       <CardContent classes={{ root: classes.content }}>
         <b>{kit.club || kit.country}</b> <br />
-        {kit.version}, {kit.year} <br />
+        {kit.version}, {yearValue} <br />
         {kit.playerName && <span>{kit.playerName}</span>}
         {kit.playerNumber && <span> #{kit.playerNumber}</span>}
         {(kit.playerName || kit.playerNumber) && <br />}
