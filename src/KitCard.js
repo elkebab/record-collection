@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { makeStyles } from "@material-ui/core/styles";
 import Card from "@material-ui/core/Card";
@@ -24,6 +24,7 @@ const useStyles = makeStyles({
 
 export default function KitCard({ kit, onClick }) {
   const classes = useStyles();
+  const [imageError, setImageError] = useState(false);
 
   let yearValue = kit.year;
   if (yearValue.length > 4) {
@@ -34,8 +35,10 @@ export default function KitCard({ kit, onClick }) {
   return (
     <Card className={classes.card} onClick={onClick}>
       <CardMedia
+        component="img"
         className={classes.media}
-        image={kit.imageUrl || fallbackImage}
+        image={!imageError ? kit.imageUrl || fallbackImage : fallbackImage}
+        onError={() => setImageError(true)}
       />
       <CardContent classes={{ root: classes.content }}>
         <b>{kit.club || kit.country}</b> <br />
