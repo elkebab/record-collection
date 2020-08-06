@@ -18,3 +18,4 @@ Local `.env` file needs an entry like `REACT_APP_DOC_ID=XXX`, where value points
 - Use Redux or React Context to avoid sending data and functions everywhere as props
 - Styling/UX
 - Implement a more sophisticated API, with authentication, etc.
+- Add TypeScript
