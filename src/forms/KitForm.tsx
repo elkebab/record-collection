@@ -1,5 +1,5 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
 import {
   TextField,
   makeStyles,
@@ -11,9 +11,10 @@ import {
   DialogActions,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import * as Yup from "yup";
 
 import { createKit, updateKit } from "../api";
+import { Kit } from "../types";
+import { kitValidationSchema } from "./KitValidationSchema";
 
 const MAX_IMG_SIZE = 800 * 800;
 
@@ -26,7 +27,8 @@ const useStyles = makeStyles({
   },
 });
 
-const newKitValues = {
+const emptyKitValues: Kit = {
+  id: "",
   country: "",
   club: "",
   version: "",
@@ -41,46 +43,23 @@ const newKitValues = {
   description: "",
 };
 
-const errorMsg = {
-  required: "Påkrevd",
-  invalid: "Ugyldig format",
-  kitNumber: "Må være mellom 1 og 99",
-};
+interface NewKitFormProps {
+  extractedValues: any;
+  closeModal: () => void;
+  selectedKit?: Kit;
+}
 
-const validationSchema = Yup.object().shape({
-  country: Yup.string().required(errorMsg.required),
-  club: Yup.string(),
-  version: Yup.string().required(errorMsg.required),
-  longSleeve: Yup.bool(),
-  year: Yup.string()
-    .test("format", "Ugyldig format", value => {
-      // Check that year is on format YYYY or YYYY/YYYY
-      const years = value && value.split("/");
-      return (
-        years &&
-        years.length <= 2 &&
-        !years.some(year => year.length !== 4 || isNaN(parseInt(year)))
-      );
-    })
-    .required(errorMsg.required),
-  playerName: Yup.string(),
-  playerNumber: Yup.number()
-    .min(1, errorMsg.kitNumber)
-    .max(99, errorMsg.kitNumber),
-  signed: Yup.bool(),
-  manufacturer: Yup.string().required(errorMsg.required),
-  imageUrl: Yup.string().url(errorMsg.invalid),
-  owner: Yup.string().required(errorMsg.required),
-  description: Yup.string(),
-});
-
-function NewKitForm({ extractedValues, closeModal, selectedKit }) {
+export const NewKitForm = ({
+  extractedValues,
+  closeModal,
+  selectedKit,
+}: NewKitFormProps) => {
   const classes = useStyles();
 
-  const initialValues = selectedKit ? selectedKit : newKitValues;
+  const initialValues = selectedKit ? selectedKit : emptyKitValues;
 
-  const submitKit = async values => {
-    const kit = {
+  const submitKit = async (values: Kit) => {
+    const kit: Kit = {
       ...values,
       playerNumber: `${values.playerNumber}`,
     };
@@ -95,16 +74,17 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
+      validationSchema={kitValidationSchema}
       validateOnChange={false}
       onSubmit={submitKit}
     >
       {({ setFieldValue }) => (
-        <Form className={classes.form}>
+        <Form>
           <Field name="owner" type="text">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <>
                 <Autocomplete
+                  fullWidth
                   options={extractedValues.allOwners}
                   freeSolo
                   defaultValue={field.value}
@@ -116,11 +96,10 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                       localStorage.removeItem("owner");
                     }
                   }}
-                  renderInput={params => (
+                  renderInput={(params) => (
                     <TextField
                       type="text"
                       label="Eier"
-                      fullWidth
                       required
                       {...params}
                       {...field}
@@ -138,18 +117,18 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="country">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
+                  fullWidth
                   options={extractedValues.allCountries}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
                   defaultValue={field.value}
-                  renderInput={params => (
+                  renderInput={(params) => (
                     <TextField
                       type="text"
                       label="Land"
-                      fullWidth
                       required
                       {...params}
                       {...field}
@@ -166,21 +145,16 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="club">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
+                  fullWidth
                   options={extractedValues.allClubs}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
                   defaultValue={field.value}
-                  renderInput={params => (
-                    <TextField
-                      type="text"
-                      label="Lag"
-                      fullWidth
-                      {...field}
-                      {...params}
-                    />
+                  renderInput={(params) => (
+                    <TextField type="text" label="Lag" {...field} {...params} />
                   )}
                 />
                 <ErrorMessage
@@ -193,19 +167,19 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="version">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
+                  fullWidth
                   options={extractedValues.allVersions}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
                   defaultValue={field.value}
-                  renderInput={params => (
+                  renderInput={(params) => (
                     <TextField
                       type="text"
                       label="Versjon"
                       required
-                      fullWidth
                       {...params}
                       {...field}
                     />
@@ -221,7 +195,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="year">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
                   type="text"
@@ -240,18 +214,18 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="manufacturer">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
+                  fullWidth
                   options={extractedValues.allManufacturers}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
                   defaultValue={field.value}
-                  renderInput={params => (
+                  renderInput={(params) => (
                     <TextField
                       type="text"
                       label="Leverandør"
-                      fullWidth
                       required
                       {...field}
                       {...params}
@@ -268,7 +242,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="playerName">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
                   type="text"
@@ -286,7 +260,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="playerNumber">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
                   type="number"
@@ -307,13 +281,16 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="signed">
-            {({ field: { name, value }, form: { setFieldValue } }) => (
+            {({
+              field: { name, value },
+              form: { setFieldValue },
+            }: FieldProps<string>) => (
               <div className={classes.field}>
                 <FormLabel component="legend">Signert</FormLabel>
                 <RadioGroup
                   row
                   value={value ? "true" : "false"}
-                  onChange={event =>
+                  onChange={(event) =>
                     setFieldValue(name, event.target.value === "true")
                   }
                 >
@@ -333,12 +310,15 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="longSleeve">
-            {({ field: { name, value }, form: { setFieldValue } }) => (
+            {({
+              field: { name, value },
+              form: { setFieldValue },
+            }: FieldProps<string>) => (
               <div className={classes.field}>
                 <FormLabel component="legend">Ermer</FormLabel>
                 <RadioGroup
                   value={value ? "true" : "false"}
-                  onChange={event =>
+                  onChange={(event) =>
                     setFieldValue(name, event.target.value === "true")
                   }
                   row
@@ -359,7 +339,7 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="description">
-            {({ field }) => (
+            {({ field }: FieldProps<string>) => (
               <TextField
                 type="text"
                 label="Beskrivelse"
@@ -371,7 +351,11 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
           </Field>
 
           <Field name="imageUrl">
-            {({ field, form: { setFieldError }, meta: { error } }) => (
+            {({
+              field,
+              form: { setFieldError },
+              meta: { error },
+            }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
                   type="text"
@@ -395,11 +379,11 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
                         "Kunne ikke laste bilde fra denne URL-en :'("
                       )
                     }
-                    onLoad={({ target: { width, height } }) => {
+                    onLoad={({ target: { width, height } }: any) => {
                       if (width * height > MAX_IMG_SIZE) {
                         setFieldError(field.name, "Bildet er for stort :(");
                       } else {
-                        setFieldError(field.name, null);
+                        setFieldError(field.name, undefined);
                       }
                     }}
                     alt=" "
@@ -418,6 +402,6 @@ function NewKitForm({ extractedValues, closeModal, selectedKit }) {
       )}
     </Formik>
   );
-}
+};
 
 export default NewKitForm;
