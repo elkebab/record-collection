@@ -1,4 +1,3 @@
-import { uuid } from "uuidv4";
 import { JsonEditorGet, Kit } from "./types";
 
 // API docs: https://jsoneditoronline.herokuapp.com/
@@ -27,7 +26,7 @@ export const createKit = async (newKit: Kit) => {
     ...currentKitsResponse.data,
     {
       ...newKit,
-      id: uuid(),
+      id: `${currentKitsResponse.data.length}`,
     },
   ];
 
