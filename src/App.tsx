@@ -47,15 +47,7 @@ export const App = () => {
   const [allKits, setAllKits] = useState<Kit[]>([]);
   const [filteredKits, setFilteredKits] = useState(allKits);
 
-  const [extractedValues, setExtractedValues] = useState<any>({
-    allOwners: [],
-    allClubs: [],
-    allCountries: [],
-    allYears: [],
-    allVersions: [],
-    allNumbers: [],
-    allManufacturers: [],
-  });
+  const extractedValues = extractKitData(allKits);
 
   // Fetch kits
   useEffect(() => {
@@ -131,29 +123,6 @@ export const App = () => {
     numberFilter,
     manufacturerFilter,
   ]);
-
-  // Extract data from collection
-  useEffect(() => {
-    const {
-      allOwners,
-      allClubs,
-      allCountries,
-      allYears,
-      allVersions,
-      allNumbers,
-      allManufacturers,
-    } = extractKitData(allKits);
-
-    setExtractedValues({
-      allOwners,
-      allClubs,
-      allCountries,
-      allYears,
-      allVersions,
-      allNumbers,
-      allManufacturers,
-    });
-  }, [allKits]);
 
   // Display the stuffs
   return (
