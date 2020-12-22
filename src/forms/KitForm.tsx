@@ -10,7 +10,7 @@ import {
   FormLabel,
   DialogActions,
 } from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import { Autocomplete } from "@material-ui/lab";
 
 import { createKit, updateKit } from "../api";
 import { Kit } from "../types";
@@ -21,9 +21,6 @@ const MAX_IMG_SIZE = 800 * 800;
 const useStyles = makeStyles({
   field: {
     marginTop: "0.8rem",
-  },
-  error: {
-    color: "red",
   },
 });
 
@@ -75,13 +72,12 @@ export const NewKitForm = ({
     <Formik
       initialValues={initialValues}
       validationSchema={kitValidationSchema}
-      validateOnChange={false}
       onSubmit={submitKit}
     >
       {({ setFieldValue }) => (
         <Form>
           <Field name="owner" type="text">
-            {({ field }: FieldProps<string>) => (
+            {({ field, meta: { error, touched } }: FieldProps<string>) => (
               <>
                 <Autocomplete
                   fullWidth
@@ -98,26 +94,22 @@ export const NewKitForm = ({
                   }}
                   renderInput={(params) => (
                     <TextField
+                      {...params}
+                      {...field}
                       type="text"
                       label="Eier"
                       required
-                      {...params}
-                      {...field}
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
                     />
                   )}
-                />
-
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
                 />
               </>
             )}
           </Field>
 
           <Field name="country">
-            {({ field }: FieldProps<string>) => (
+            {({ field, meta: { error, touched } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
                   fullWidth
@@ -127,25 +119,22 @@ export const NewKitForm = ({
                   defaultValue={field.value}
                   renderInput={(params) => (
                     <TextField
+                      {...params}
+                      {...field}
                       type="text"
                       label="Land"
                       required
-                      {...params}
-                      {...field}
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
                     />
                   )}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
                 />
               </div>
             )}
           </Field>
 
           <Field name="club">
-            {({ field }: FieldProps<string>) => (
+            {({ field, meta: { error, touched } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
                   fullWidth
@@ -154,20 +143,22 @@ export const NewKitForm = ({
                   onChange={(_, value) => setFieldValue(field.name, value)}
                   defaultValue={field.value}
                   renderInput={(params) => (
-                    <TextField type="text" label="Lag" {...field} {...params} />
+                    <TextField
+                      {...field}
+                      {...params}
+                      type="text"
+                      label="Lag"
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
+                    />
                   )}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
                 />
               </div>
             )}
           </Field>
 
           <Field name="version">
-            {({ field }: FieldProps<string>) => (
+            {({ field, meta: { error, touched } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
                   fullWidth
@@ -177,44 +168,37 @@ export const NewKitForm = ({
                   defaultValue={field.value}
                   renderInput={(params) => (
                     <TextField
+                      {...params}
+                      {...field}
                       type="text"
                       label="Versjon"
                       required
-                      {...params}
-                      {...field}
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
                     />
                   )}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
                 />
               </div>
             )}
           </Field>
 
           <Field name="year">
-            {({ field }: FieldProps<string>) => (
+            {({ field, meta: { error, touched } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
+                  {...field}
                   type="text"
                   label="År"
                   required
-                  {...field}
                   helperText='Eksempel: "2015" eller "2017/2018"'
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
+                  error={!!error && touched}
                 />
               </div>
             )}
           </Field>
 
           <Field name="manufacturer">
-            {({ field }: FieldProps<string>) => (
+            {({ field, meta: { error, touched } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <Autocomplete
                   fullWidth
@@ -224,18 +208,15 @@ export const NewKitForm = ({
                   defaultValue={field.value}
                   renderInput={(params) => (
                     <TextField
+                      {...field}
+                      {...params}
                       type="text"
                       label="Leverandør"
                       required
-                      {...field}
-                      {...params}
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
                     />
                   )}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
                 />
               </div>
             )}
@@ -245,46 +226,35 @@ export const NewKitForm = ({
             {({ field }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
+                  {...field}
                   type="text"
                   label="Spillernavn"
                   fullWidth
-                  {...field}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
                 />
               </div>
             )}
           </Field>
 
           <Field name="playerNumber">
-            {({ field }: FieldProps<string>) => (
+            {({ field, meta: { error, touched } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
+                  {...field}
                   type="number"
                   label="Spillernummer"
                   inputProps={{
                     min: "1",
                     max: "99",
                   }}
-                  {...field}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
+                  error={!!error && touched}
+                  helperText={<ErrorMessage name={field.name} />}
                 />
               </div>
             )}
           </Field>
 
           <Field name="signed">
-            {({
-              field: { name, value },
-              form: { setFieldValue },
-            }: FieldProps<string>) => (
+            {({ field: { name, value } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <FormLabel component="legend">Signert</FormLabel>
                 <RadioGroup
@@ -310,10 +280,7 @@ export const NewKitForm = ({
           </Field>
 
           <Field name="longSleeve">
-            {({
-              field: { name, value },
-              form: { setFieldValue },
-            }: FieldProps<string>) => (
+            {({ field: { name, value } }: FieldProps<string>) => (
               <div className={classes.field}>
                 <FormLabel component="legend">Ermer</FormLabel>
                 <RadioGroup
@@ -341,11 +308,11 @@ export const NewKitForm = ({
           <Field name="description">
             {({ field }: FieldProps<string>) => (
               <TextField
+                {...field}
                 type="text"
                 label="Beskrivelse"
                 fullWidth
                 multiline
-                {...field}
               />
             )}
           </Field>
@@ -354,24 +321,20 @@ export const NewKitForm = ({
             {({
               field,
               form: { setFieldError },
-              meta: { error },
+              meta: { error, touched },
             }: FieldProps<string>) => (
               <div className={classes.field}>
                 <TextField
+                  {...field}
                   type="text"
                   label="Bilde-URL"
                   fullWidth
                   multiline
-                  {...field}
-                />
-                <ErrorMessage
-                  name={field.name}
-                  className={classes.error}
-                  component="div"
+                  error={!!error && touched}
+                  helperText={<ErrorMessage name={field.name} />}
                 />
                 {field.value && !error && (
                   <img
-                    className={classes.error}
                     src={field.value}
                     onError={() =>
                       setFieldError(

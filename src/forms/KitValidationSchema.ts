@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 const errorMsg = {
-  required: "Påkrevd",
+  required: "Obligatorisk",
   invalid: "Ugyldig format",
   kitNumber: "Må være mellom 1 og 99",
 };
