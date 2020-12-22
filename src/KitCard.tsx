@@ -1,7 +1,7 @@
 import { makeStyles, Card, CardMedia, CardContent } from "@material-ui/core";
 import React, { useState } from "react";
 
-import fallbackImage from "./images/fallback-image.png";
+import fallbackImage from "./images/shirt-outline.png";
 import { Kit } from "./types";
 
 const useStyles = makeStyles({
