@@ -6,13 +6,14 @@ import {
   useMediaQuery,
   DialogTitle,
   DialogContent,
+  IconButton,
 } from "@material-ui/core";
-import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
-import KitCard from "./KitCard";
+import { KitCard } from "./KitCard";
 import KitForm from "./forms/KitForm";
 import { sortByYear } from "./utils";
+import { Kit } from "./types";
 
 const useStyles = makeStyles({
   kitsOverview: {
@@ -31,17 +32,22 @@ const useStyles = makeStyles({
   },
 });
 
-export default function KitsOverview({ kits, extractedValues }) {
+interface KitsOverviewProps {
+  kits: Kit[];
+  extractedValues: any;
+}
+
+export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedKit, setSelectedKit] = useState(null);
+  const [selectedKit, setSelectedKit] = useState<Kit>();
   const fullscreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
-  const [sortedKits, setSortedKits] = useState([]);
+  const [sortedKits, setSortedKits] = useState<Kit[]>([]);
   const [kitsPerOwner, setKitsPerOwner] = useState({});
 
   const toggleModal = () => {
     if (showModal && selectedKit) {
-      setSelectedKit(null);
+      setSelectedKit(undefined);
     }
     setShowModal(!showModal);
   };
@@ -53,8 +59,8 @@ export default function KitsOverview({ kits, extractedValues }) {
 
   useEffect(() => {
     // Find number of kits per owner
-    const tempKitsPerOwner = {};
-    kits.forEach(kit => {
+    const tempKitsPerOwner: any = {};
+    kits.forEach((kit) => {
       if (!tempKitsPerOwner[kit.owner]) {
         tempKitsPerOwner[kit.owner] = [kit];
       } else {
@@ -90,8 +96,8 @@ export default function KitsOverview({ kits, extractedValues }) {
 
       <article className={classes.kitsOverview}>
         {Object.entries(kitsPerOwner)
-          .sort((a, b) => b[1].length - a[1].length)
-          .map(([owner, ownerKits]) => (
+          .sort((a: any, b: any) => b[1].length - a[1].length)
+          .map(([owner, ownerKits]: any) => (
             <span key={owner}>
               {owner}: {ownerKits.length} treff
             </span>
@@ -101,7 +107,7 @@ export default function KitsOverview({ kits, extractedValues }) {
         </Button>
       </article>
       <article className={classes.kitsOverview}>
-        {sortedKits.map(kit => (
+        {sortedKits.map((kit) => (
           <KitCard
             key={kit.id}
             kit={kit}
@@ -114,4 +120,4 @@ export default function KitsOverview({ kits, extractedValues }) {
       </article>
     </section>
   );
-}
+};

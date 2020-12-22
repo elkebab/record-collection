@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import KitsOverview from "./KitsOverview";
+import { KitsOverview } from "./KitsOverview";
 import { fetchKitCollection } from "./api";
 import { extractKitData } from "./utils";
 

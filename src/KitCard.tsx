@@ -1,11 +1,8 @@
+import { makeStyles, Card, CardMedia, CardContent } from "@material-ui/core";
 import React, { useState } from "react";
 
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-
 import fallbackImage from "./images/fallback-image.png";
+import { Kit } from "./types";
 
 const useStyles = makeStyles({
   card: {
@@ -22,7 +19,12 @@ const useStyles = makeStyles({
   },
 });
 
-export default function KitCard({ kit, onClick }) {
+interface KitCardProps {
+  kit: Kit;
+  onClick: () => void;
+}
+
+export const KitCard = ({ kit, onClick }: KitCardProps) => {
   const classes = useStyles();
   const [imageError, setImageError] = useState(false);
 
@@ -50,4 +52,4 @@ export default function KitCard({ kit, onClick }) {
       </CardContent>
     </Card>
   );
-}
+};

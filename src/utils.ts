@@ -1,6 +1,9 @@
-const extractDistinctValues = (values) => [...new Set(values)].filter((x) => x);
+import { Kit } from "./types";
 
-export const extractKitData = (allKits) => {
+const extractDistinctValues = (values: string[]) =>
+  [...new Set(values)].filter((x) => x);
+
+export const extractKitData = (allKits: Kit[]) => {
   const allOwners = extractDistinctValues(
     allKits.map((kit) => kit.owner)
   ).sort();
@@ -30,7 +33,7 @@ export const extractKitData = (allKits) => {
   };
 };
 
-export const sortByYear = (kits) => {
+export const sortByYear = (kits: Kit[]) => {
   const sortedKits = kits.sort((a, b) => {
     const yearsA = a.year
       .split("/")
