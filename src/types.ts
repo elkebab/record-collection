@@ -14,6 +14,10 @@ export interface Kit {
   description: string;
 }
 
-export interface KitResponse {
+export interface JsonEditorGet {
+  _id: string;
+  _rev: string;
+  name: string;
   data: Kit[];
+  updated: string;
 }
