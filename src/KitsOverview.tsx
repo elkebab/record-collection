@@ -112,10 +112,8 @@ export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
           value={sortByMethod}
           onChange={(event) => setSortByMethod(event.target.value)}
         >
-          <MenuItem value={SortMethod.Added}>
-            Sorter basert på dato lagt til
-          </MenuItem>
-          <MenuItem value={SortMethod.Year}>Sorter basert på sesong</MenuItem>
+          <MenuItem value={SortMethod.Added}>Sorter på dato lagt til</MenuItem>
+          <MenuItem value={SortMethod.Year}>Sorter på sesong</MenuItem>
         </TextField>
         <Button variant="outlined" onClick={toggleModal}>
           Legg til drakt
