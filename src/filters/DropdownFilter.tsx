@@ -1,11 +1,6 @@
 import React from "react";
-
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-
 import { makeStyles } from "@material-ui/core/styles";
+import { FormControl, InputLabel, Select, Input } from "@material-ui/core";
 
 const useStyles = makeStyles({
   select: {
@@ -13,21 +8,31 @@ const useStyles = makeStyles({
   },
 });
 
-export default function DropdownFilter({ title, items, setFilterFunction }) {
+interface DropdownFilterProps {
+  setFilterFunction: (filter: any) => void;
+  title: string;
+  items: any[];
+}
+
+export const DropdownFilter = ({
+  title,
+  items,
+  setFilterFunction,
+}: DropdownFilterProps) => {
   const filterId = `${title}-select`;
   const classes = useStyles();
   return (
-    <FormControl className={classes.formControl}>
+    <FormControl>
       <InputLabel htmlFor={filterId}>{title}</InputLabel>
       <Select
         className={classes.select}
         native
         defaultValue=""
         input={<Input id={filterId} />}
-        onChange={event => setFilterFunction(event.target.value)}
+        onChange={(event) => setFilterFunction(event.target.value)}
       >
         <option value="" />
-        {items.map(item => (
+        {items.map((item) => (
           <option key={item} value={item}>
             {item}
           </option>
@@ -35,4 +40,4 @@ export default function DropdownFilter({ title, items, setFilterFunction }) {
       </Select>
     </FormControl>
   );
-}
+};

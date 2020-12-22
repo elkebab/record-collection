@@ -5,9 +5,7 @@ import KitsOverview from "./KitsOverview";
 import { fetchKitCollection } from "./api";
 import { extractKitData } from "./utils";
 
-import OriginFilter from "./filters/OriginFilter";
-import PlayerFilter from "./filters/PlayerFilter";
-import DropdownFilter from "./filters/DropdownFilter";
+import { OriginFilter, PlayerFilter, DropdownFilter } from "./filters";
 
 const useStyles = makeStyles({
   main: {
@@ -72,48 +70,50 @@ export default function App() {
     let tempFilteredKits = allKits;
 
     if (ownerFilter) {
-      tempFilteredKits = tempFilteredKits.filter(k => k.owner === ownerFilter);
+      tempFilteredKits = tempFilteredKits.filter(
+        (k) => k.owner === ownerFilter
+      );
     }
     if (originFilter) {
-      tempFilteredKits = tempFilteredKits.filter(k =>
+      tempFilteredKits = tempFilteredKits.filter((k) =>
         [k.club, k.country].includes(originFilter)
       );
     }
     if (playerFilter) {
-      tempFilteredKits = tempFilteredKits.filter(k =>
+      tempFilteredKits = tempFilteredKits.filter((k) =>
         k.playerName.toLowerCase().includes(playerFilter)
       );
     }
     if (numberFilter) {
       tempFilteredKits = tempFilteredKits.filter(
-        k => k.playerNumber === numberFilter
+        (k) => k.playerNumber === numberFilter
       );
     }
     if (yearFilter) {
-      tempFilteredKits = tempFilteredKits.filter(k => k.year === yearFilter);
+      tempFilteredKits = tempFilteredKits.filter((k) => k.year === yearFilter);
     }
     if (versionFilter) {
       tempFilteredKits = tempFilteredKits.filter(
-        k => k.version === versionFilter
+        (k) => k.version === versionFilter
       );
     }
     if (signedFilter) {
       if (signedFilter === SignedTypes.TRUE) {
-        tempFilteredKits = tempFilteredKits.filter(k => k.signed);
+        tempFilteredKits = tempFilteredKits.filter((k) => k.signed);
       } else if (signedFilter === SignedTypes.FALSE) {
-        tempFilteredKits = tempFilteredKits.filter(k => !k.signed);
+        tempFilteredKits = tempFilteredKits.filter((k) => !k.signed);
       }
     }
     if (sleevesFilter) {
       if (sleevesFilter === SleeveTypes.SHORT) {
-        tempFilteredKits = tempFilteredKits.filter(k => !k.longSleeve);
+        tempFilteredKits = tempFilteredKits.filter((k) => !k.longSleeve);
       } else if (sleevesFilter === SleeveTypes.LONG) {
-        tempFilteredKits = tempFilteredKits.filter(k => k.longSleeve);
+        tempFilteredKits = tempFilteredKits.filter((k) => k.longSleeve);
       }
     }
     if (manufacturerFilter) {
       tempFilteredKits = tempFilteredKits.filter(
-        k => k.manufacturer === manufacturerFilter
+        (k) => k.manufacturer === manufacturerFilter
       );
     }
 

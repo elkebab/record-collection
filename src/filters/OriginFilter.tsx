@@ -1,11 +1,17 @@
 import React from "react";
+import { FormControl, Select, Input, InputLabel } from "@material-ui/core";
 
-import InputLabel from "@material-ui/core/InputLabel";
-import Input from "@material-ui/core/Input";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
+interface OriginFilterProps {
+  setOriginFilter: (filter: any) => void;
+  clubs: any[];
+  countries: any[];
+}
 
-export default function OriginFilter({ clubs, countries, setOriginFilter }) {
+export const OriginFilter = ({
+  clubs,
+  countries,
+  setOriginFilter,
+}: OriginFilterProps) => {
   const originFilterId = "owner-select";
   return (
     <FormControl>
@@ -14,18 +20,18 @@ export default function OriginFilter({ clubs, countries, setOriginFilter }) {
         native
         defaultValue=""
         input={<Input id={originFilterId} />}
-        onChange={event => setOriginFilter(event.target.value)}
+        onChange={(event) => setOriginFilter(event.target.value)}
       >
         <option value="" />
         <optgroup label="Land">
-          {countries.map(country => (
+          {countries.map((country) => (
             <option key={country} value={country}>
               {country}
             </option>
           ))}
         </optgroup>
         <optgroup label="Klubb">
-          {clubs.map(club => (
+          {clubs.map((club) => (
             <option key={club} value={club}>
               {club}
             </option>
@@ -34,4 +40,4 @@ export default function OriginFilter({ clubs, countries, setOriginFilter }) {
       </Select>
     </FormControl>
   );
-}
+};
