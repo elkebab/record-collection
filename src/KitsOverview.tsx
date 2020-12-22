@@ -7,12 +7,14 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  TextField,
+  MenuItem,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { KitCard } from "./KitCard";
 import KitForm from "./forms/KitForm";
-import { sortByYear } from "./utils";
+import { sortByAdded, sortByYear } from "./utils";
 import { Kit } from "./types";
 
 const useStyles = makeStyles({
@@ -37,13 +39,18 @@ interface KitsOverviewProps {
   extractedValues: any;
 }
 
+const SortMethod = {
+  Added: "ADDED", // Date kit was added
+  Year: "YEAR", // Year for kit
+};
+
 export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedKit, setSelectedKit] = useState<Kit>();
   const fullscreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
-  const [sortedKits, setSortedKits] = useState<Kit[]>([]);
   const [kitsPerOwner, setKitsPerOwner] = useState({});
+  const [sortByMethod, setSortByMethod] = useState(SortMethod.Added);
 
   const toggleModal = () => {
     if (showModal && selectedKit) {
@@ -51,11 +58,6 @@ export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
     }
     setShowModal(!showModal);
   };
-
-  useEffect(() => {
-    // Order kits by year
-    setSortedKits(sortByYear(kits));
-  }, [kits]);
 
   useEffect(() => {
     // Find number of kits per owner
@@ -69,6 +71,9 @@ export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
     });
     setKitsPerOwner(tempKitsPerOwner);
   }, [kits]);
+
+  const sortedKits =
+    sortByMethod === SortMethod.Added ? sortByAdded(kits) : sortByYear(kits);
 
   return (
     <section>
@@ -102,6 +107,16 @@ export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
               {owner}: {ownerKits.length} treff
             </span>
           ))}
+        <TextField
+          select
+          value={sortByMethod}
+          onChange={(event) => setSortByMethod(event.target.value)}
+        >
+          <MenuItem value={SortMethod.Added}>
+            Sorter basert på dato lagt til
+          </MenuItem>
+          <MenuItem value={SortMethod.Year}>Sorter basert på sesong</MenuItem>
+        </TextField>
         <Button variant="outlined" onClick={toggleModal}>
           Legg til drakt
         </Button>

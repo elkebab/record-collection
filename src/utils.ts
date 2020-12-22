@@ -56,3 +56,8 @@ export const sortByYear = (kits: Kit[]) => {
 
   return sortedKits;
 };
+
+export const sortByAdded = (kits: Kit[]) => {
+  const sortedKits = kits.sort((a, b) => +b.id - +a.id);
+  return sortedKits;
+};
