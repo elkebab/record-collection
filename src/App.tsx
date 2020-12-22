@@ -6,6 +6,7 @@ import { fetchKitCollection } from "./api";
 import { extractKitData } from "./utils";
 
 import { OriginFilter, PlayerFilter, DropdownFilter } from "./filters";
+import { Kit } from "./types";
 
 const useStyles = makeStyles({
   main: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles({
 const SleeveTypes = { SHORT: "Kort", LONG: "Lang" };
 const SignedTypes = { FALSE: "Nei", TRUE: "Ja" };
 
-export default function App() {
+export const App = () => {
   const classes = useStyles();
 
   // Filters
@@ -43,10 +44,10 @@ export default function App() {
   const [manufacturerFilter, setManufacturerFilter] = useState("");
 
   // Kits
-  const [allKits, setAllKits] = useState([]);
+  const [allKits, setAllKits] = useState<Kit[]>([]);
   const [filteredKits, setFilteredKits] = useState(allKits);
 
-  const [extractedValues, setExtractedValues] = useState({
+  const [extractedValues, setExtractedValues] = useState<any>({
     allOwners: [],
     allClubs: [],
     allCountries: [],
@@ -156,54 +157,52 @@ export default function App() {
 
   // Display the stuffs
   return (
-    <>
-      <main className={classes.main}>
-        <section className={classes.filtersContainer}>
-          <DropdownFilter
-            title="Eier"
-            items={extractedValues.allOwners}
-            setFilterFunction={setOwnerFilter}
-          />
-          <OriginFilter
-            clubs={extractedValues.allClubs}
-            countries={extractedValues.allCountries}
-            setOriginFilter={setOriginFilter}
-          />
-          <PlayerFilter setPlayerFilter={setPlayerFilter} />
-          <DropdownFilter
-            title="Nr"
-            items={extractedValues.allNumbers}
-            setFilterFunction={setNumberFilter}
-          />
-          <DropdownFilter
-            title="År"
-            items={extractedValues.allYears}
-            setFilterFunction={setYearFilter}
-          />
-          <DropdownFilter
-            title="Versjon"
-            items={extractedValues.allVersions}
-            setFilterFunction={setVersionFilter}
-          />
-          <DropdownFilter
-            title="Merke"
-            items={extractedValues.allManufacturers}
-            setFilterFunction={setManufacturerFilter}
-          />
-          <DropdownFilter
-            title="Ermer"
-            items={Object.values(SleeveTypes)}
-            setFilterFunction={setSleevesFilter}
-          />
-          <DropdownFilter
-            title="Signert"
-            items={Object.values(SignedTypes)}
-            setFilterFunction={setSignedFilter}
-          />
-        </section>
+    <main className={classes.main}>
+      <section className={classes.filtersContainer}>
+        <DropdownFilter
+          title="Eier"
+          items={extractedValues.allOwners}
+          setFilterFunction={setOwnerFilter}
+        />
+        <OriginFilter
+          clubs={extractedValues.allClubs}
+          countries={extractedValues.allCountries}
+          setOriginFilter={setOriginFilter}
+        />
+        <PlayerFilter setPlayerFilter={setPlayerFilter} />
+        <DropdownFilter
+          title="Nr"
+          items={extractedValues.allNumbers}
+          setFilterFunction={setNumberFilter}
+        />
+        <DropdownFilter
+          title="År"
+          items={extractedValues.allYears}
+          setFilterFunction={setYearFilter}
+        />
+        <DropdownFilter
+          title="Versjon"
+          items={extractedValues.allVersions}
+          setFilterFunction={setVersionFilter}
+        />
+        <DropdownFilter
+          title="Merke"
+          items={extractedValues.allManufacturers}
+          setFilterFunction={setManufacturerFilter}
+        />
+        <DropdownFilter
+          title="Ermer"
+          items={Object.values(SleeveTypes)}
+          setFilterFunction={setSleevesFilter}
+        />
+        <DropdownFilter
+          title="Signert"
+          items={Object.values(SignedTypes)}
+          setFilterFunction={setSignedFilter}
+        />
+      </section>
 
-        <KitsOverview kits={filteredKits} extractedValues={extractedValues} />
-      </main>
-    </>
+      <KitsOverview kits={filteredKits} extractedValues={extractedValues} />
+    </main>
   );
-}
+};

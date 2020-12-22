@@ -3,8 +3,8 @@ import { FormControl, Select, Input, InputLabel } from "@material-ui/core";
 
 interface OriginFilterProps {
   setOriginFilter: (filter: any) => void;
-  clubs: any[];
-  countries: any[];
+  clubs: string[];
+  countries: string[];
 }
 
 export const OriginFilter = ({

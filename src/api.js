@@ -1,4 +1,4 @@
-import { uuid } from 'uuidv4';
+import { uuid } from "uuidv4";
 
 // API docs: https://jsoneditoronline.herokuapp.com/
 
@@ -16,7 +16,7 @@ export const fetchKitCollection = async () => {
   };
 };
 
-export const createKit = async newKit => {
+export const createKit = async (newKit) => {
   const currentKitsResponse = await fetchKitCollection();
 
   const nextKitsData = [
@@ -30,10 +30,10 @@ export const createKit = async newKit => {
   return updateKitsData(nextKitsData, currentKitsResponse._rev);
 };
 
-export const updateKit = async updatedKit => {
+export const updateKit = async (updatedKit) => {
   const currentKitsResponse = await fetchKitCollection();
 
-  const nextKitsData = currentKitsResponse.data.map(kit => {
+  const nextKitsData = currentKitsResponse.data.map((kit) => {
     if (kit.id === updatedKit.id) {
       return updatedKit;
     }
