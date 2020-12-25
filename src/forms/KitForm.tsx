@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FieldProps } from "formik";
 import {
   TextField,
@@ -59,6 +59,7 @@ export const NewKitForm = ({
   selectedKit,
 }: NewKitFormProps) => {
   const classes = useStyles();
+  const [showUppy, setShowUppy] = useState(false);
 
   const initialValues = selectedKit ? selectedKit : emptyKitValues;
 
@@ -329,14 +330,14 @@ export const NewKitForm = ({
                 <img
                   src={field.value ? field.value : fallbackImage}
                   width="10%"
-                  alt=" "
+                  alt="Mangler bilde"
                 />
               )}
             </Field>
+            <Button onClick={() => setShowUppy(true)}>Oppdater bilde</Button>
           </div>
 
-          <FormLabel>Last opp nytt bilde:</FormLabel>
-          <FileUpload />
+          {showUppy && <FileUpload hideUppy={() => setShowUppy(false)} />}
 
           <DialogActions className={classes.formRow}>
             <Button onClick={closeModal}>Avbryt</Button>

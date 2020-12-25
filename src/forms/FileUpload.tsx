@@ -6,7 +6,11 @@ import { Kit } from "../types";
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
 
-export const FileUpload = () => {
+interface FileUploadProps {
+  hideUppy: () => void;
+}
+
+export const FileUpload = ({ hideUppy }: FileUploadProps) => {
   const { values, setFieldValue } = useFormikContext<Kit>();
   const uppy = useUppy(createUppy(values.owner, values.id));
 
@@ -15,6 +19,7 @@ export const FileUpload = () => {
       "imageUrl",
       complete.results.compress_image[0].url.replace("dl=0", "raw=1")
     );
+    hideUppy();
   });
 
   return (
