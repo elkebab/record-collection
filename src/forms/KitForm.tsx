@@ -51,12 +51,14 @@ interface NewKitFormProps {
   extractedValues: any;
   closeModal: () => void;
   selectedKit?: Kit;
+  refetchKits: () => void;
 }
 
 export const NewKitForm = ({
   extractedValues,
   closeModal,
   selectedKit,
+  refetchKits,
 }: NewKitFormProps) => {
   const classes = useStyles();
   const [showUppy, setShowUppy] = useState(false);
@@ -72,7 +74,7 @@ export const NewKitForm = ({
     // Update kit if it has an ID. Create new kit otherwise.
     const response = kit.id ? await updateKit(kit) : await createKit(kit);
     if (response.ok) {
-      window.location.reload();
+      refetchKits();
     }
   };
 

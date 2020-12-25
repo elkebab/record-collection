@@ -37,6 +37,7 @@ const useStyles = makeStyles({
 interface KitsOverviewProps {
   kits: Kit[];
   extractedValues: any;
+  refetchKits: () => void;
 }
 
 const SortMethod = {
@@ -44,7 +45,11 @@ const SortMethod = {
   Year: "YEAR", // Year for kit
 };
 
-export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
+export const KitsOverview = ({
+  kits,
+  extractedValues,
+  refetchKits,
+}: KitsOverviewProps) => {
   const [showModal, setShowModal] = useState(false);
   const [selectedKit, setSelectedKit] = useState<Kit>();
   const fullscreen = useMediaQuery("(max-width:600px)");
@@ -95,6 +100,7 @@ export const KitsOverview = ({ kits, extractedValues }: KitsOverviewProps) => {
             extractedValues={extractedValues}
             closeModal={toggleModal}
             selectedKit={selectedKit}
+            refetchKits={refetchKits}
           />
         </DialogContent>
       </Dialog>

@@ -2,11 +2,10 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { KitsOverview } from "./KitsOverview";
-import { fetchKitCollection } from "./api";
 import { extractKitData } from "./utils";
-
 import { OriginFilter, PlayerFilter, DropdownFilter } from "./filters";
-import { Kit } from "./types";
+import { useFetchKits } from "./useFetchKits";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles({
   main: {
@@ -23,6 +22,9 @@ const useStyles = makeStyles({
       marginTop: "0,5rem",
       marginRight: "1rem",
     },
+  },
+  loading: {
+    marginTop: "5rem",
   },
 });
 
@@ -44,19 +46,10 @@ export const App = () => {
   const [manufacturerFilter, setManufacturerFilter] = useState("");
 
   // Kits
-  const [allKits, setAllKits] = useState<Kit[]>([]);
+  const [allKits, isLoadingKits, refetchKits] = useFetchKits();
   const [filteredKits, setFilteredKits] = useState(allKits);
 
   const extractedValues = extractKitData(allKits);
-
-  // Fetch kits
-  useEffect(() => {
-    const fetchKits = async () => {
-      const kitCollection = await fetchKitCollection();
-      setAllKits(kitCollection.data);
-    };
-    fetchKits();
-  }, []);
 
   // Perform filtering
   useEffect(() => {
@@ -171,7 +164,15 @@ export const App = () => {
         />
       </section>
 
-      <KitsOverview kits={filteredKits} extractedValues={extractedValues} />
+      {isLoadingKits ? (
+        <CircularProgress className={classes.loading} />
+      ) : (
+        <KitsOverview
+          kits={filteredKits}
+          extractedValues={extractedValues}
+          refetchKits={refetchKits}
+        />
+      )}
     </main>
   );
 };
