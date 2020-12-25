@@ -1,0 +1,23 @@
+import { Dashboard, useUppy } from "@uppy/react";
+import { useFormikContext } from "formik";
+import { createUppy } from "../uppy/uppyConfig";
+import { Kit } from "../types";
+
+import "@uppy/core/dist/style.css";
+import "@uppy/dashboard/dist/style.css";
+
+export const FileUpload = () => {
+  const { values, setFieldValue } = useFormikContext<Kit>();
+  const uppy = useUppy(createUppy(values.owner, values.id));
+
+  uppy.on("transloadit:complete", (complete) => {
+    setFieldValue(
+      "imageUrl",
+      complete.results.compress_image[0].url.replace("dl=0", "raw=1")
+    );
+  });
+
+  return (
+    <Dashboard uppy={uppy} proudlyDisplayPoweredByUppy={false} height={200} />
+  );
+};
