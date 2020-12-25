@@ -9,18 +9,25 @@ import {
   FormControlLabel,
   FormLabel,
   DialogActions,
+  FormControl,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-
 import { createKit, updateKit } from "../api";
 import { Kit } from "../types";
 import { kitValidationSchema } from "./KitValidationSchema";
-
-const MAX_IMG_SIZE = 800 * 800;
+import { FileUpload } from "./FileUpload";
+import fallbackImage from "../images/shirt-outline.png";
 
 const useStyles = makeStyles({
-  field: {
-    marginTop: "0.8rem",
+  formRow: {
+    marginTop: "0.5rem",
+    marginBottom: "0.5rem",
+    display: "flex",
+    alignItems: "center",
+
+    "&>*:not(:last-child)": {
+      marginRight: "1rem",
+    },
   },
 });
 
@@ -76,9 +83,9 @@ export const NewKitForm = ({
     >
       {({ setFieldValue }) => (
         <Form>
-          <Field name="owner" type="text">
-            {({ field, meta: { error, touched } }: FieldProps<string>) => (
-              <>
+          <div className={classes.formRow}>
+            <Field name="owner">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
                 <Autocomplete
                   fullWidth
                   options={extractedValues.allOwners}
@@ -104,102 +111,11 @@ export const NewKitForm = ({
                     />
                   )}
                 />
-              </>
-            )}
-          </Field>
+              )}
+            </Field>
 
-          <Field name="country">
-            {({ field, meta: { error, touched } }: FieldProps<string>) => (
-              <div className={classes.field}>
-                <Autocomplete
-                  fullWidth
-                  options={extractedValues.allCountries}
-                  freeSolo
-                  onChange={(_, value) => setFieldValue(field.name, value)}
-                  defaultValue={field.value}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      {...field}
-                      type="text"
-                      label="Land"
-                      required
-                      error={!!error && touched}
-                      helperText={<ErrorMessage name={field.name} />}
-                    />
-                  )}
-                />
-              </div>
-            )}
-          </Field>
-
-          <Field name="club">
-            {({ field, meta: { error, touched } }: FieldProps<string>) => (
-              <div className={classes.field}>
-                <Autocomplete
-                  fullWidth
-                  options={extractedValues.allClubs}
-                  freeSolo
-                  onChange={(_, value) => setFieldValue(field.name, value)}
-                  defaultValue={field.value}
-                  renderInput={(params) => (
-                    <TextField
-                      {...field}
-                      {...params}
-                      type="text"
-                      label="Lag"
-                      error={!!error && touched}
-                      helperText={<ErrorMessage name={field.name} />}
-                    />
-                  )}
-                />
-              </div>
-            )}
-          </Field>
-
-          <Field name="version">
-            {({ field, meta: { error, touched } }: FieldProps<string>) => (
-              <div className={classes.field}>
-                <Autocomplete
-                  fullWidth
-                  options={extractedValues.allVersions}
-                  freeSolo
-                  onChange={(_, value) => setFieldValue(field.name, value)}
-                  defaultValue={field.value}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      {...field}
-                      type="text"
-                      label="Versjon"
-                      required
-                      error={!!error && touched}
-                      helperText={<ErrorMessage name={field.name} />}
-                    />
-                  )}
-                />
-              </div>
-            )}
-          </Field>
-
-          <Field name="year">
-            {({ field, meta: { error, touched } }: FieldProps<string>) => (
-              <div className={classes.field}>
-                <TextField
-                  {...field}
-                  type="text"
-                  label="År"
-                  required
-                  helperText='Eksempel: "2015" eller "2017/2018"'
-                  error={!!error && touched}
-                />
-              </div>
-            )}
-          </Field>
-
-          <Field name="manufacturer">
-            {({ field, meta: { error, touched } }: FieldProps<string>) => (
-              <div className={classes.field}>
+            <Field name="manufacturer">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
                 <Autocomplete
                   fullWidth
                   options={extractedValues.allManufacturers}
@@ -218,26 +134,110 @@ export const NewKitForm = ({
                     />
                   )}
                 />
-              </div>
-            )}
-          </Field>
+              )}
+            </Field>
+          </div>
 
-          <Field name="playerName">
-            {({ field }: FieldProps<string>) => (
-              <div className={classes.field}>
+          <div className={classes.formRow}>
+            <Field name="country">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
+                <Autocomplete
+                  fullWidth
+                  options={extractedValues.allCountries}
+                  freeSolo
+                  onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      {...field}
+                      type="text"
+                      label="Land"
+                      required
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
+                    />
+                  )}
+                />
+              )}
+            </Field>
+
+            <Field name="club">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
+                <Autocomplete
+                  fullWidth
+                  options={extractedValues.allClubs}
+                  freeSolo
+                  onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
+                  renderInput={(params) => (
+                    <TextField
+                      {...field}
+                      {...params}
+                      type="text"
+                      label="Lag"
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
+                    />
+                  )}
+                />
+              )}
+            </Field>
+          </div>
+
+          <div className={classes.formRow}>
+            <Field name="version">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
+                <Autocomplete
+                  fullWidth
+                  options={extractedValues.allVersions}
+                  freeSolo
+                  onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      {...field}
+                      type="text"
+                      label="Versjon"
+                      required
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
+                    />
+                  )}
+                />
+              )}
+            </Field>
+
+            <Field name="year">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  label="År"
+                  required
+                  fullWidth
+                  error={!!error && touched}
+                  helperText={<ErrorMessage name={field.name} />}
+                />
+              )}
+            </Field>
+          </div>
+
+          <div className={classes.formRow}>
+            <Field name="playerName">
+              {({ field }: FieldProps<string>) => (
                 <TextField
                   {...field}
                   type="text"
                   label="Spillernavn"
                   fullWidth
                 />
-              </div>
-            )}
-          </Field>
+              )}
+            </Field>
 
-          <Field name="playerNumber">
-            {({ field, meta: { error, touched } }: FieldProps<string>) => (
-              <div className={classes.field}>
+            <Field name="playerNumber">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
                 <TextField
                   {...field}
                   type="number"
@@ -246,116 +246,99 @@ export const NewKitForm = ({
                     min: "1",
                     max: "99",
                   }}
+                  fullWidth
                   error={!!error && touched}
                   helperText={<ErrorMessage name={field.name} />}
                 />
-              </div>
-            )}
-          </Field>
+              )}
+            </Field>
+          </div>
 
-          <Field name="signed">
-            {({ field: { name, value } }: FieldProps<string>) => (
-              <div className={classes.field}>
-                <FormLabel component="legend">Signert</FormLabel>
-                <RadioGroup
-                  row
-                  value={value ? "true" : "false"}
-                  onChange={(event) =>
-                    setFieldValue(name, event.target.value === "true")
-                  }
-                >
-                  <FormControlLabel
-                    control={<Radio color="primary" value="false" />}
-                    label="Nei"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    control={<Radio color="primary" value="true" />}
-                    label="Ja"
-                    labelPlacement="start"
-                  />
-                </RadioGroup>
-              </div>
-            )}
-          </Field>
+          <div className={classes.formRow}>
+            <Field name="signed">
+              {({ field: { name, value } }: FieldProps<string>) => (
+                <FormControl fullWidth>
+                  <FormLabel component="legend">Signert</FormLabel>
+                  <RadioGroup
+                    row
+                    value={value ? "true" : "false"}
+                    onChange={(event) =>
+                      setFieldValue(name, event.target.value === "true")
+                    }
+                  >
+                    <FormControlLabel
+                      control={<Radio color="primary" value="false" />}
+                      label="Nei"
+                      labelPlacement="start"
+                    />
+                    <FormControlLabel
+                      control={<Radio color="primary" value="true" />}
+                      label="Ja"
+                      labelPlacement="start"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
+            </Field>
 
-          <Field name="longSleeve">
-            {({ field: { name, value } }: FieldProps<string>) => (
-              <div className={classes.field}>
-                <FormLabel component="legend">Ermer</FormLabel>
-                <RadioGroup
-                  value={value ? "true" : "false"}
-                  onChange={(event) =>
-                    setFieldValue(name, event.target.value === "true")
-                  }
-                  row
-                >
-                  <FormControlLabel
-                    control={<Radio color="primary" value="false" />}
-                    label="Kort"
-                    labelPlacement="start"
-                  />
-                  <FormControlLabel
-                    control={<Radio color="primary" value="true" />}
-                    label="Lang"
-                    labelPlacement="start"
-                  />
-                </RadioGroup>
-              </div>
-            )}
-          </Field>
+            <Field name="longSleeve">
+              {({ field: { name, value } }: FieldProps<string>) => (
+                <FormControl fullWidth>
+                  <FormLabel component="legend">Ermer</FormLabel>
+                  <RadioGroup
+                    value={value ? "true" : "false"}
+                    onChange={(event) =>
+                      setFieldValue(name, event.target.value === "true")
+                    }
+                    row
+                  >
+                    <FormControlLabel
+                      control={<Radio color="primary" value="false" />}
+                      label="Kort"
+                      labelPlacement="start"
+                    />
+                    <FormControlLabel
+                      control={<Radio color="primary" value="true" />}
+                      label="Lang"
+                      labelPlacement="start"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
+            </Field>
+          </div>
 
-          <Field name="description">
-            {({ field }: FieldProps<string>) => (
-              <TextField
-                {...field}
-                type="text"
-                label="Beskrivelse"
-                fullWidth
-                multiline
-              />
-            )}
-          </Field>
-
-          <Field name="imageUrl">
-            {({
-              field,
-              form: { setFieldError },
-              meta: { error, touched },
-            }: FieldProps<string>) => (
-              <div className={classes.field}>
+          <div className={classes.formRow}>
+            <Field name="description">
+              {({ field }: FieldProps<string>) => (
                 <TextField
                   {...field}
                   type="text"
-                  label="Bilde-URL"
+                  label="Beskrivelse"
                   fullWidth
                   multiline
-                  error={!!error && touched}
-                  helperText={<ErrorMessage name={field.name} />}
                 />
-                {field.value && !error && (
-                  <img
-                    src={field.value}
-                    onError={() =>
-                      setFieldError(
-                        field.name,
-                        "Kunne ikke laste bilde fra denne URL-en :'("
-                      )
-                    }
-                    onLoad={({ target: { width, height } }: any) => {
-                      if (width * height > MAX_IMG_SIZE) {
-                        setFieldError(field.name, "Bildet er for stort :(");
-                      } else {
-                        setFieldError(field.name, undefined);
-                      }
-                    }}
-                    alt=" "
-                  />
-                )}
-              </div>
-            )}
-          </Field>
-          <DialogActions className={classes.field}>
+              )}
+            </Field>
+          </div>
+
+          <div className={classes.formRow}>
+            <FormLabel>Bilde:</FormLabel>
+            <Field name="imageUrl">
+              {({ field }: FieldProps<string>) => (
+                <img
+                  src={field.value ? field.value : fallbackImage}
+                  width="10%"
+                  alt=" "
+                />
+              )}
+            </Field>
+          </div>
+
+          <FormLabel>Last opp nytt bilde:</FormLabel>
+          <FileUpload />
+
+          <DialogActions className={classes.formRow}>
             <Button onClick={closeModal}>Avbryt</Button>
             <Button type="submit" variant="contained" color="primary">
               Lagre

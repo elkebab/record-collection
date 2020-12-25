@@ -4,6 +4,7 @@ const errorMsg = {
   required: "Obligatorisk",
   invalid: "Ugyldig format",
   kitNumber: "Må være mellom 1 og 99",
+  invalidDate: 'Eksempel: "2015" eller "2017/2018"',
 };
 
 export const kitValidationSchema = Yup.object().shape({
@@ -12,7 +13,8 @@ export const kitValidationSchema = Yup.object().shape({
   version: Yup.string().required(errorMsg.required),
   longSleeve: Yup.bool(),
   year: Yup.string()
-    .test("format", "Ugyldig format", (value: any) => {
+    .required(errorMsg.required)
+    .test("format", errorMsg.invalidDate, (value: any) => {
       // Check that year is on format YYYY or YYYY/YYYY
       const years = value && value.split("/");
       return (
@@ -22,8 +24,8 @@ export const kitValidationSchema = Yup.object().shape({
           (year: string) => year.length !== 4 || isNaN(parseInt(year))
         )
       );
-    })
-    .required(errorMsg.required),
+    }),
+
   playerName: Yup.string(),
   playerNumber: Yup.number()
     .min(1, errorMsg.kitNumber)
