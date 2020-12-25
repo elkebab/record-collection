@@ -11,8 +11,8 @@ export const createUppy = (owner: string, id: string) => () =>
     locale: Norwegian,
   }).use(Transloadit, {
     params: {
-      auth: { key: "37baf3b6c9a841048c6c093dc4224b66" },
-      template_id: "e3fcb9a5448a41b48efcdee61fb2ee70",
+      auth: { key: process.env.REACT_APP_TRANSLOADIT_KEY as string },
+      template_id: process.env.REACT_APP_TRANSLOADIT_TEMPLATE as string,
     },
     waitForMetadata: true,
     waitForEncoding: true,

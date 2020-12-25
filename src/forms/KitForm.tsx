@@ -84,7 +84,7 @@ export const NewKitForm = ({
       validationSchema={kitValidationSchema}
       onSubmit={submitKit}
     >
-      {({ setFieldValue }) => (
+      {({ setFieldValue, isSubmitting }) => (
         <Form>
           <div className={classes.formRow}>
             <Field name="owner">
@@ -342,8 +342,15 @@ export const NewKitForm = ({
           {showUppy && <FileUpload hideUppy={() => setShowUppy(false)} />}
 
           <DialogActions className={classes.formRow}>
-            <Button onClick={closeModal}>Avbryt</Button>
-            <Button type="submit" variant="contained" color="primary">
+            <Button onClick={closeModal} disabled={isSubmitting}>
+              Avbryt
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isSubmitting}
+            >
               Lagre
             </Button>
           </DialogActions>
