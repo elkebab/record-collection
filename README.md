@@ -1,6 +1,6 @@
 ## General
 
-Simple app to show collection of Records. Basically a fork of [kits-collection](https://github.com/elkebab/kits-collection) .
+Simple app to show collection of Records. Basically a fork of [kits-collection](https://github.com/elkebab/kits-collection).
 
 ### [Demo](https://mokkelgjerd.no/platesamling)
 
