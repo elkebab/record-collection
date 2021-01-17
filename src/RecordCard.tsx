@@ -1,8 +1,8 @@
 import { makeStyles, Card, CardMedia, CardContent } from "@material-ui/core";
 import React, { useState } from "react";
 
-import fallbackImage from "./images/shirt-outline.png";
-import { Kit } from "./types";
+import fallbackImage from "./images/record-outline.png";
+import { Record } from "./types";
 
 const useStyles = makeStyles({
   card: {
@@ -19,36 +19,29 @@ const useStyles = makeStyles({
   },
 });
 
-interface KitCardProps {
-  kit: Kit;
+interface RecordCardProps {
+  record: Record;
   onClick: () => void;
 }
 
-export const KitCard = ({ kit, onClick }: KitCardProps) => {
+export const RecordCard = ({ record, onClick }: RecordCardProps) => {
   const classes = useStyles();
   const [imageError, setImageError] = useState(false);
-
-  let yearValue = kit.year;
-  if (yearValue.length > 4) {
-    const years = yearValue.split("/");
-    yearValue = `${years[0].slice(2, 4)}/${years[1].slice(2, 4)}`;
-  }
 
   return (
     <Card className={classes.card} onClick={onClick}>
       <CardMedia
         component="img"
         className={classes.media}
-        image={!imageError ? kit.imageUrl || fallbackImage : fallbackImage}
+        image={!imageError ? record.imageUrl || fallbackImage : fallbackImage}
         onError={() => setImageError(true)}
       />
       <CardContent classes={{ root: classes.content }}>
-        <b>{kit.club || kit.country}</b> <br />
-        {kit.version}, {yearValue} <br />
-        {kit.playerName && <span>{kit.playerName}</span>}
-        {kit.playerNumber && <span> #{kit.playerNumber}</span>}
-        {(kit.playerName || kit.playerNumber) && <br />}
-        Eier: {kit.owner}
+        <b>{record.album}</b> <br />
+        {record.band} <br />
+        {record.year} <br />
+        {record.type} <br />
+        Eier: {record.owner}
       </CardContent>
     </Card>
   );

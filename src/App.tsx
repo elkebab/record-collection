@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { KitsOverview } from "./KitsOverview";
-import { extractKitData } from "./utils";
-import { OriginFilter, PlayerFilter, DropdownFilter } from "./filters";
-import { useFetchKits } from "./useFetchKits";
 import { CircularProgress } from "@material-ui/core";
+
+import { RecordOverview } from "./RecordOverview";
+import { extractRecordData } from "./utils";
+import { DropdownFilter } from "./filters";
+import { useFetchRecords } from "./useFetchRecords";
+import { RecordType } from "./types";
 
 const useStyles = makeStyles({
   main: {
@@ -28,7 +29,6 @@ const useStyles = makeStyles({
   },
 });
 
-const SleeveTypes = { SHORT: "Kort", LONG: "Lang" };
 const SignedTypes = { FALSE: "Nei", TRUE: "Ja" };
 
 export const App = () => {
@@ -36,85 +36,70 @@ export const App = () => {
 
   // Filters
   const [ownerFilter, setOwnerFilter] = useState("");
-  const [originFilter, setOriginFilter] = useState("");
-  const [playerFilter, setPlayerFilter] = useState("");
-  const [numberFilter, setNumberFilter] = useState("");
-  const [yearFilter, setYearFilter] = useState("");
-  const [versionFilter, setVersionFilter] = useState("");
+  const [bandFilter, setBandFilter] = useState("");
+  const [albumFilter, setAlbumFilter] = useState("");
+  const [genreFilter, setGenreFilter] = useState("");
+  const [typeFilter, setTypeFilter] = useState("");
   const [signedFilter, setSignedFilter] = useState("");
-  const [sleevesFilter, setSleevesFilter] = useState("");
-  const [manufacturerFilter, setManufacturerFilter] = useState("");
+  const [yearFilter, setYearFilter] = useState("");
 
-  // Kits
-  const [allKits, isLoadingKits, refetchKits] = useFetchKits();
-  const [filteredKits, setFilteredKits] = useState(allKits);
+  // Records
+  const [allRecords, isLoadingRecords, refetchRecords] = useFetchRecords();
+  const [filteredRecords, setFilteredRecords] = useState(allRecords);
 
-  const extractedValues = extractKitData(allKits);
+  const extractedValues = extractRecordData(allRecords);
 
   // Perform filtering
   useEffect(() => {
-    let tempFilteredKits = allKits;
+    let tempFilteredRecords = allRecords;
 
     if (ownerFilter) {
-      tempFilteredKits = tempFilteredKits.filter(
-        (k) => k.owner === ownerFilter
+      tempFilteredRecords = tempFilteredRecords.filter(
+        (r) => r.owner === ownerFilter
       );
     }
-    if (originFilter) {
-      tempFilteredKits = tempFilteredKits.filter((k) =>
-        [k.club, k.country].includes(originFilter)
+    if (bandFilter) {
+      tempFilteredRecords = tempFilteredRecords.filter((r) =>
+        r.band.toLowerCase().includes(bandFilter)
       );
     }
-    if (playerFilter) {
-      tempFilteredKits = tempFilteredKits.filter((k) =>
-        k.playerName.toLowerCase().includes(playerFilter)
-      );
-    }
-    if (numberFilter) {
-      tempFilteredKits = tempFilteredKits.filter(
-        (k) => k.playerNumber === numberFilter
+    if (albumFilter) {
+      tempFilteredRecords = tempFilteredRecords.filter((r) =>
+        r.album.toLowerCase().includes(albumFilter)
       );
     }
     if (yearFilter) {
-      tempFilteredKits = tempFilteredKits.filter((k) => k.year === yearFilter);
-    }
-    if (versionFilter) {
-      tempFilteredKits = tempFilteredKits.filter(
-        (k) => k.version === versionFilter
+      tempFilteredRecords = tempFilteredRecords.filter(
+        (r) => r.year === yearFilter
       );
     }
-    if (signedFilter) {
-      if (signedFilter === SignedTypes.TRUE) {
-        tempFilteredKits = tempFilteredKits.filter((k) => k.signed);
-      } else if (signedFilter === SignedTypes.FALSE) {
-        tempFilteredKits = tempFilteredKits.filter((k) => !k.signed);
-      }
-    }
-    if (sleevesFilter) {
-      if (sleevesFilter === SleeveTypes.SHORT) {
-        tempFilteredKits = tempFilteredKits.filter((k) => !k.longSleeve);
-      } else if (sleevesFilter === SleeveTypes.LONG) {
-        tempFilteredKits = tempFilteredKits.filter((k) => k.longSleeve);
-      }
-    }
-    if (manufacturerFilter) {
-      tempFilteredKits = tempFilteredKits.filter(
-        (k) => k.manufacturer === manufacturerFilter
+    if (genreFilter) {
+      tempFilteredRecords = tempFilteredRecords.filter((r) =>
+        r.genre.toLowerCase().includes(genreFilter)
       );
     }
 
-    setFilteredKits(tempFilteredKits);
+    if (signedFilter) {
+      tempFilteredRecords = tempFilteredRecords.filter((r) =>
+        signedFilter === SignedTypes.TRUE ? r.signed : !r.signed
+      );
+    }
+    if (typeFilter) {
+      tempFilteredRecords = tempFilteredRecords.filter(
+        (r) => r.type === typeFilter
+      );
+    }
+
+    setFilteredRecords(tempFilteredRecords);
   }, [
-    allKits,
+    allRecords,
     ownerFilter,
-    originFilter,
-    playerFilter,
+    bandFilter,
+    albumFilter,
     yearFilter,
-    versionFilter,
+    genreFilter,
     signedFilter,
-    sleevesFilter,
-    numberFilter,
-    manufacturerFilter,
+    typeFilter,
   ]);
 
   // Display the stuffs
@@ -126,16 +111,16 @@ export const App = () => {
           items={extractedValues.allOwners}
           setFilterFunction={setOwnerFilter}
         />
-        <OriginFilter
-          clubs={extractedValues.allClubs}
-          countries={extractedValues.allCountries}
-          setOriginFilter={setOriginFilter}
-        />
-        <PlayerFilter setPlayerFilter={setPlayerFilter} />
+
         <DropdownFilter
-          title="Nr"
-          items={extractedValues.allNumbers}
-          setFilterFunction={setNumberFilter}
+          title="Album"
+          items={extractedValues.allAlbums}
+          setFilterFunction={setAlbumFilter}
+        />
+        <DropdownFilter
+          title="Band"
+          items={extractedValues.allBands}
+          setFilterFunction={setBandFilter}
         />
         <DropdownFilter
           title="År"
@@ -143,19 +128,14 @@ export const App = () => {
           setFilterFunction={setYearFilter}
         />
         <DropdownFilter
-          title="Versjon"
-          items={extractedValues.allVersions}
-          setFilterFunction={setVersionFilter}
+          title="Sjanger"
+          items={extractedValues.allGenres}
+          setFilterFunction={setGenreFilter}
         />
         <DropdownFilter
-          title="Merke"
-          items={extractedValues.allManufacturers}
-          setFilterFunction={setManufacturerFilter}
-        />
-        <DropdownFilter
-          title="Ermer"
-          items={Object.values(SleeveTypes)}
-          setFilterFunction={setSleevesFilter}
+          title="Type"
+          items={Object.values(RecordType)}
+          setFilterFunction={setTypeFilter}
         />
         <DropdownFilter
           title="Signert"
@@ -164,13 +144,13 @@ export const App = () => {
         />
       </section>
 
-      {isLoadingKits ? (
+      {isLoadingRecords ? (
         <CircularProgress className={classes.loading} />
       ) : (
-        <KitsOverview
-          kits={filteredKits}
+        <RecordOverview
+          records={filteredRecords}
           extractedValues={extractedValues}
-          refetchKits={refetchKits}
+          refetchRecords={refetchRecords}
         />
       )}
     </main>

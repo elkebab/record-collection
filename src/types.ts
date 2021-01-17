@@ -1,16 +1,19 @@
-export interface Kit {
+export enum RecordType {
+  EP = "EP",
+  LP = "LP",
+  Other = "Other",
+}
+
+export interface Record {
   id: string;
-  country: string;
-  club: string;
-  version: string;
-  longSleeve: boolean;
-  year: string;
-  playerName: string;
-  playerNumber: string;
-  signed: boolean;
-  manufacturer: string;
-  imageUrl: string;
   owner: string;
+  album: string;
+  band: string;
+  year: string;
+  genre: string;
+  type: RecordType | "";
+  signed: boolean;
+  imageUrl: string;
   description: string;
 }
 
@@ -18,6 +21,6 @@ export interface JsonEditorGet {
   _id: string;
   _rev: string;
   name: string;
-  data: Kit[];
+  data: Record[];
   updated: string;
 }

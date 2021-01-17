@@ -1,7 +1,7 @@
 import { Dashboard, useUppy } from "@uppy/react";
 import { useFormikContext } from "formik";
 import { createUppy } from "../uppy/uppyConfig";
-import { Kit } from "../types";
+import { Record } from "../types";
 
 import "@uppy/core/dist/style.css";
 import "@uppy/dashboard/dist/style.css";
@@ -11,7 +11,7 @@ interface FileUploadProps {
 }
 
 export const FileUpload = ({ hideUppy }: FileUploadProps) => {
-  const { values, setFieldValue } = useFormikContext<Kit>();
+  const { values, setFieldValue } = useFormikContext<Record>();
   const uppy = useUppy(createUppy(values.owner, values.id));
 
   uppy.on("transloadit:complete", (complete) => {

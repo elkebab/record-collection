@@ -27,3 +27,5 @@ yarn-error.log*
 data-backup.json
 
 .eslintcache
+
+/public/favicon.png

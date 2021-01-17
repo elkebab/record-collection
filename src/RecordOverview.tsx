@@ -12,13 +12,13 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
-import { KitCard } from "./KitCard";
-import KitForm from "./forms/KitForm";
+import { RecordCard } from "./RecordCard";
+import RecordForm from "./forms/RecordForm";
 import { sortByAdded, sortByYear } from "./utils";
-import { Kit } from "./types";
+import { Record } from "./types";
 
 const useStyles = makeStyles({
-  kitsOverview: {
+  recordsOverview: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "center",
@@ -34,51 +34,52 @@ const useStyles = makeStyles({
   },
 });
 
-interface KitsOverviewProps {
-  kits: Kit[];
+interface RecordOverviewProps {
+  records: Record[];
   extractedValues: any;
-  refetchKits: () => void;
+  refetchRecords: () => void;
 }
 
 const SortMethod = {
-  Added: "ADDED", // Date kit was added
-  Year: "YEAR", // Year for kit
+  Added: "ADDED",
+  Year: "YEAR",
 };
 
-export const KitsOverview = ({
-  kits,
+export const RecordOverview = ({
+  records,
   extractedValues,
-  refetchKits,
-}: KitsOverviewProps) => {
+  refetchRecords,
+}: RecordOverviewProps) => {
   const [showModal, setShowModal] = useState(false);
-  const [selectedKit, setSelectedKit] = useState<Kit>();
+  const [selectedRecord, setSelectedRecord] = useState<Record>();
   const fullscreen = useMediaQuery("(max-width:600px)");
   const classes = useStyles();
-  const [kitsPerOwner, setKitsPerOwner] = useState({});
+  const [recordsPerOwner, setRecordsPerOwner] = useState({});
   const [sortByMethod, setSortByMethod] = useState(SortMethod.Added);
 
   const toggleModal = () => {
-    if (showModal && selectedKit) {
-      setSelectedKit(undefined);
+    if (showModal && selectedRecord) {
+      setSelectedRecord(undefined);
     }
     setShowModal(!showModal);
   };
 
   useEffect(() => {
-    // Find number of kits per owner
-    const tempKitsPerOwner: any = {};
-    kits.forEach((kit) => {
-      if (!tempKitsPerOwner[kit.owner]) {
-        tempKitsPerOwner[kit.owner] = [kit];
+    const tempRecordsPerOwner: any = {};
+    records.forEach((record) => {
+      if (!tempRecordsPerOwner[record.owner]) {
+        tempRecordsPerOwner[record.owner] = [record];
       } else {
-        tempKitsPerOwner[kit.owner].push(kit);
+        tempRecordsPerOwner[record.owner].push(record);
       }
     });
-    setKitsPerOwner(tempKitsPerOwner);
-  }, [kits]);
+    setRecordsPerOwner(tempRecordsPerOwner);
+  }, [records]);
 
-  const sortedKits =
-    sortByMethod === SortMethod.Added ? sortByAdded(kits) : sortByYear(kits);
+  const sortedRecords =
+    sortByMethod === SortMethod.Added
+      ? sortByAdded(records)
+      : sortByYear(records);
 
   return (
     <section>
@@ -90,27 +91,27 @@ export const KitsOverview = ({
         fullWidth
       >
         <DialogTitle>
-          {selectedKit ? "Oppdater drakt" : "Registrer ny drakt"}
+          {selectedRecord ? "Oppdater plate" : "Registrer ny plate"}
           <IconButton className={classes.closeButton} onClick={toggleModal}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <KitForm
+          <RecordForm
             extractedValues={extractedValues}
             closeModal={toggleModal}
-            selectedKit={selectedKit}
-            refetchKits={refetchKits}
+            selectedRecord={selectedRecord}
+            refetchRecords={refetchRecords}
           />
         </DialogContent>
       </Dialog>
 
-      <article className={classes.kitsOverview}>
-        {Object.entries(kitsPerOwner)
+      <article className={classes.recordsOverview}>
+        {Object.entries(recordsPerOwner)
           .sort((a: any, b: any) => b[1].length - a[1].length)
-          .map(([owner, ownerKits]: any) => (
+          .map(([owner, ownerRecords]: any) => (
             <span key={owner}>
-              {owner}: {ownerKits.length} treff
+              {owner}: {ownerRecords.length} treff
             </span>
           ))}
         <TextField
@@ -119,19 +120,19 @@ export const KitsOverview = ({
           onChange={(event) => setSortByMethod(event.target.value)}
         >
           <MenuItem value={SortMethod.Added}>Sorter på dato lagt til</MenuItem>
-          <MenuItem value={SortMethod.Year}>Sorter på sesong</MenuItem>
+          <MenuItem value={SortMethod.Year}>Sorter på utgivelsesår</MenuItem>
         </TextField>
         <Button variant="outlined" onClick={toggleModal}>
-          Legg til drakt
+          Legg til plate
         </Button>
       </article>
-      <article className={classes.kitsOverview}>
-        {sortedKits.map((kit) => (
-          <KitCard
-            key={kit.id}
-            kit={kit}
+      <article className={classes.recordsOverview}>
+        {sortedRecords.map((record) => (
+          <RecordCard
+            key={record.id}
+            record={record}
             onClick={() => {
-              setSelectedKit(kit);
+              setSelectedRecord(record);
               toggleModal();
             }}
           />

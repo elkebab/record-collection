@@ -1,11 +1,10 @@
-import { JsonEditorGet, Kit } from "./types";
+import { JsonEditorGet, Record } from "./types";
 
 // API docs: https://jsoneditoronline.herokuapp.com/
 
 const docId = process.env.REACT_APP_DOC_ID;
 
-// Fetch kit collections from all IDs
-export const fetchKitCollection = async () => {
+export const fetchRecordCollection = async () => {
   const response = await fetch(
     `https://jsoneditoronline.herokuapp.com/v1/docs/${docId}`
   );
@@ -19,36 +18,36 @@ export const fetchKitCollection = async () => {
   return parsedResponse;
 };
 
-export const createKit = async (newKit: Kit) => {
-  const currentKitsResponse = await fetchKitCollection();
+export const createRecord = async (newRecord: Record) => {
+  const currentRecordsResponse = await fetchRecordCollection();
 
-  const nextKitsData = [
-    ...currentKitsResponse.data,
+  const nextRecordsData = [
+    ...currentRecordsResponse.data,
     {
-      ...newKit,
-      id: `${currentKitsResponse.data.length}`,
+      ...newRecord,
+      id: `${currentRecordsResponse.data.length}`,
     },
   ];
 
-  return updateKitsData(nextKitsData, currentKitsResponse._rev);
+  return updateRecordsData(nextRecordsData, currentRecordsResponse._rev);
 };
 
-export const updateKit = async (updatedKit: Kit) => {
-  const currentKitsResponse = await fetchKitCollection();
+export const updateRecord = async (updatedRecord: Record) => {
+  const currentRecordsResponse = await fetchRecordCollection();
 
-  const updatedKitsData = currentKitsResponse.data.map((kit: Kit) =>
-    kit.id === updatedKit.id ? updatedKit : kit
+  const updatedRecordsData = currentRecordsResponse.data.map((record: Record) =>
+    record.id === updatedRecord.id ? updatedRecord : record
   );
 
-  return updateKitsData(updatedKitsData, currentKitsResponse._rev);
+  return updateRecordsData(updatedRecordsData, currentRecordsResponse._rev);
 };
 
-const updateKitsData = async (data: Kit[], docRev: string) => {
+const updateRecordsData = async (data: Record[], docRev: string) => {
   const payload = {
     _id: docId,
     _rev: docRev,
     updated: new Date().toLocaleString(),
-    name: "kits",
+    name: "records",
     data: JSON.stringify(data),
   };
 

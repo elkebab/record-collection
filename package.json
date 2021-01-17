@@ -1,8 +1,8 @@
 {
-  "name": "kits-collection",
+  "name": "record-collection",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://mokkelgjerd.no/drakter",
+  "homepage": "https://mokkelgjerd.no/halvdan",
   "dependencies": {
     "@material-ui/core": "^4.11.2",
     "@material-ui/icons": "^4.11.2",

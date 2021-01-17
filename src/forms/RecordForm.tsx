@@ -12,11 +12,11 @@ import {
   FormControl,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
-import { createKit, updateKit } from "../api";
-import { Kit } from "../types";
-import { kitValidationSchema } from "./KitValidationSchema";
+import { createRecord, updateRecord } from "../api";
+import { Record, RecordType } from "../types";
+import { recordValidationSchema } from "./RecordValidationSchema";
 import { FileUpload } from "./FileUpload";
-import fallbackImage from "../images/shirt-outline.png";
+import fallbackImage from "../images/record-outline.png";
 
 const useStyles = makeStyles({
   formRow: {
@@ -31,58 +31,51 @@ const useStyles = makeStyles({
   },
 });
 
-const emptyKitValues: Kit = {
+const emptyRecordValues: Record = {
   id: "",
-  country: "",
-  club: "",
-  version: "",
-  longSleeve: false,
+  band: "",
+  album: "",
   year: "",
-  playerName: "",
-  playerNumber: "",
+  genre: "",
   signed: false,
-  manufacturer: "",
   imageUrl: "",
   owner: localStorage.getItem("owner") || "",
+  type: "",
   description: "",
 };
 
-interface NewKitFormProps {
+interface NewRecordFormProps {
   extractedValues: any;
   closeModal: () => void;
-  selectedKit?: Kit;
-  refetchKits: () => void;
+  selectedRecord?: Record;
+  refetchRecords: () => void;
 }
 
-export const NewKitForm = ({
+const NewRecordForm = ({
   extractedValues,
   closeModal,
-  selectedKit,
-  refetchKits,
-}: NewKitFormProps) => {
+  selectedRecord,
+  refetchRecords,
+}: NewRecordFormProps) => {
   const classes = useStyles();
   const [showUppy, setShowUppy] = useState(false);
 
-  const initialValues = selectedKit ? selectedKit : emptyKitValues;
+  const initialValues = selectedRecord ? selectedRecord : emptyRecordValues;
 
-  const submitKit = async (values: Kit) => {
-    const kit: Kit = {
-      ...values,
-      playerNumber: `${values.playerNumber}`,
-    };
-
-    // Update kit if it has an ID. Create new kit otherwise.
-    const response = kit.id ? await updateKit(kit) : await createKit(kit);
+  const submitRecord = async (values: Record) => {
+    const response = values.id
+      ? await updateRecord(values)
+      : await createRecord(values);
     if (response.ok) {
-      refetchKits();
+      refetchRecords();
     }
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={kitValidationSchema}
-      onSubmit={submitKit}
+      validationSchema={recordValidationSchema}
+      onSubmit={submitRecord}
     >
       {({ setFieldValue, isSubmitting }) => (
         <Form>
@@ -117,11 +110,11 @@ export const NewKitForm = ({
               )}
             </Field>
 
-            <Field name="manufacturer">
+            <Field name="album">
               {({ field, meta: { error, touched } }: FieldProps<string>) => (
                 <Autocomplete
                   fullWidth
-                  options={extractedValues.allManufacturers}
+                  options={extractedValues.allAlbums}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
                   defaultValue={field.value}
@@ -130,7 +123,7 @@ export const NewKitForm = ({
                       {...field}
                       {...params}
                       type="text"
-                      label="Leverandør"
+                      label="Album"
                       required
                       error={!!error && touched}
                       helperText={<ErrorMessage name={field.name} />}
@@ -142,11 +135,11 @@ export const NewKitForm = ({
           </div>
 
           <div className={classes.formRow}>
-            <Field name="country">
+            <Field name="band">
               {({ field, meta: { error, touched } }: FieldProps<string>) => (
                 <Autocomplete
                   fullWidth
-                  options={extractedValues.allCountries}
+                  options={extractedValues.allBands}
                   freeSolo
                   onChange={(_, value) => setFieldValue(field.name, value)}
                   defaultValue={field.value}
@@ -155,54 +148,7 @@ export const NewKitForm = ({
                       {...params}
                       {...field}
                       type="text"
-                      label="Land"
-                      required
-                      error={!!error && touched}
-                      helperText={<ErrorMessage name={field.name} />}
-                    />
-                  )}
-                />
-              )}
-            </Field>
-
-            <Field name="club">
-              {({ field, meta: { error, touched } }: FieldProps<string>) => (
-                <Autocomplete
-                  fullWidth
-                  options={extractedValues.allClubs}
-                  freeSolo
-                  onChange={(_, value) => setFieldValue(field.name, value)}
-                  defaultValue={field.value}
-                  renderInput={(params) => (
-                    <TextField
-                      {...field}
-                      {...params}
-                      type="text"
-                      label="Lag"
-                      error={!!error && touched}
-                      helperText={<ErrorMessage name={field.name} />}
-                    />
-                  )}
-                />
-              )}
-            </Field>
-          </div>
-
-          <div className={classes.formRow}>
-            <Field name="version">
-              {({ field, meta: { error, touched } }: FieldProps<string>) => (
-                <Autocomplete
-                  fullWidth
-                  options={extractedValues.allVersions}
-                  freeSolo
-                  onChange={(_, value) => setFieldValue(field.name, value)}
-                  defaultValue={field.value}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      {...field}
-                      type="text"
-                      label="Versjon"
+                      label="Band"
                       required
                       error={!!error && touched}
                       helperText={<ErrorMessage name={field.name} />}
@@ -214,53 +160,68 @@ export const NewKitForm = ({
 
             <Field name="year">
               {({ field, meta: { error, touched } }: FieldProps<string>) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="År"
-                  required
+                <Autocomplete
                   fullWidth
-                  error={!!error && touched}
-                  helperText={<ErrorMessage name={field.name} />}
+                  options={extractedValues.allYears}
+                  freeSolo
+                  onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
+                  renderInput={(params) => (
+                    <TextField
+                      {...field}
+                      {...params}
+                      required
+                      type="text"
+                      label="År"
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
+                    />
+                  )}
                 />
               )}
             </Field>
           </div>
 
           <div className={classes.formRow}>
-            <Field name="playerName">
-              {({ field }: FieldProps<string>) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  label="Spillernavn"
-                  fullWidth
-                />
+            <Field name="type">
+              {({
+                field: { name, value },
+                meta: { error, touched },
+              }: FieldProps<string>) => (
+                <FormControl fullWidth required error={!!error && touched}>
+                  <FormLabel component="legend">Type</FormLabel>
+                  <RadioGroup
+                    value={value}
+                    onChange={(event) =>
+                      setFieldValue(name, event.target.value)
+                    }
+                    row
+                  >
+                    <FormControlLabel
+                      control={<Radio color="primary" value={RecordType.LP} />}
+                      label="LP"
+                      labelPlacement="start"
+                    />
+                    <FormControlLabel
+                      control={<Radio color="primary" value={RecordType.EP} />}
+                      label="EP"
+                      labelPlacement="start"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Radio color="primary" value={RecordType.Other} />
+                      }
+                      label="Annet"
+                      labelPlacement="start"
+                    />
+                  </RadioGroup>
+                </FormControl>
               )}
             </Field>
 
-            <Field name="playerNumber">
-              {({ field, meta: { error, touched } }: FieldProps<string>) => (
-                <TextField
-                  {...field}
-                  type="number"
-                  label="Spillernummer"
-                  inputProps={{
-                    min: "1",
-                    max: "99",
-                  }}
-                  fullWidth
-                  error={!!error && touched}
-                  helperText={<ErrorMessage name={field.name} />}
-                />
-              )}
-            </Field>
-          </div>
-
-          <div className={classes.formRow}>
             <Field name="signed">
               {({ field: { name, value } }: FieldProps<string>) => (
-                <FormControl fullWidth>
+                <FormControl fullWidth required>
                   <FormLabel component="legend">Signert</FormLabel>
                   <RadioGroup
                     row
@@ -283,30 +244,29 @@ export const NewKitForm = ({
                 </FormControl>
               )}
             </Field>
+          </div>
 
-            <Field name="longSleeve">
-              {({ field: { name, value } }: FieldProps<string>) => (
-                <FormControl fullWidth>
-                  <FormLabel component="legend">Ermer</FormLabel>
-                  <RadioGroup
-                    value={value ? "true" : "false"}
-                    onChange={(event) =>
-                      setFieldValue(name, event.target.value === "true")
-                    }
-                    row
-                  >
-                    <FormControlLabel
-                      control={<Radio color="primary" value="false" />}
-                      label="Kort"
-                      labelPlacement="start"
+          <div className={classes.formRow}>
+            <Field name="genre">
+              {({ field, meta: { error, touched } }: FieldProps<string>) => (
+                <Autocomplete
+                  fullWidth
+                  options={extractedValues.allGenres}
+                  freeSolo
+                  onChange={(_, value) => setFieldValue(field.name, value)}
+                  defaultValue={field.value}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      {...field}
+                      type="text"
+                      label="Sjanger"
+                      required
+                      error={!!error && touched}
+                      helperText={<ErrorMessage name={field.name} />}
                     />
-                    <FormControlLabel
-                      control={<Radio color="primary" value="true" />}
-                      label="Lang"
-                      labelPlacement="start"
-                    />
-                  </RadioGroup>
-                </FormControl>
+                  )}
+                />
               )}
             </Field>
           </div>
@@ -325,7 +285,7 @@ export const NewKitForm = ({
             </Field>
           </div>
 
-          <div className={classes.formRow}>
+          {/* <div className={classes.formRow}>
             <FormLabel>Bilde:</FormLabel>
             <Field name="imageUrl">
               {({ field }: FieldProps<string>) => (
@@ -339,7 +299,8 @@ export const NewKitForm = ({
             <Button onClick={() => setShowUppy(true)}>Oppdater bilde</Button>
           </div>
 
-          {showUppy && <FileUpload hideUppy={() => setShowUppy(false)} />}
+          TODO:
+          {showUppy && <FileUpload hideUppy={() => setShowUppy(false)} />} */}
 
           <DialogActions className={classes.formRow}>
             <Button onClick={closeModal} disabled={isSubmitting}>
@@ -360,4 +321,4 @@ export const NewKitForm = ({
   );
 };
 
-export default NewKitForm;
+export default NewRecordForm;
