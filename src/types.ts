@@ -1,7 +1,7 @@
 export enum RecordType {
   EP = "EP",
   LP = "LP",
-  Other = "Other",
+  Other = "Annet",
 }
 
 export interface Record {

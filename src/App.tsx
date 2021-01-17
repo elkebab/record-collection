@@ -59,13 +59,13 @@ export const App = () => {
       );
     }
     if (bandFilter) {
-      tempFilteredRecords = tempFilteredRecords.filter((r) =>
-        r.band.toLowerCase().includes(bandFilter)
+      tempFilteredRecords = tempFilteredRecords.filter(
+        (r) => r.band === bandFilter
       );
     }
     if (albumFilter) {
-      tempFilteredRecords = tempFilteredRecords.filter((r) =>
-        r.album.toLowerCase().includes(albumFilter)
+      tempFilteredRecords = tempFilteredRecords.filter(
+        (r) => r.album === albumFilter
       );
     }
     if (yearFilter) {
@@ -74,8 +74,8 @@ export const App = () => {
       );
     }
     if (genreFilter) {
-      tempFilteredRecords = tempFilteredRecords.filter((r) =>
-        r.genre.toLowerCase().includes(genreFilter)
+      tempFilteredRecords = tempFilteredRecords.filter(
+        (r) => r.genre === genreFilter
       );
     }
 
