@@ -285,7 +285,7 @@ const NewRecordForm = ({
             </Field>
           </div>
 
-          {/* <div className={classes.formRow}>
+          <div className={classes.formRow}>
             <FormLabel>Bilde:</FormLabel>
             <Field name="imageUrl">
               {({ field }: FieldProps<string>) => (
@@ -299,8 +299,7 @@ const NewRecordForm = ({
             <Button onClick={() => setShowUppy(true)}>Oppdater bilde</Button>
           </div>
 
-          TODO:
-          {showUppy && <FileUpload hideUppy={() => setShowUppy(false)} />} */}
+          {showUppy && <FileUpload hideUppy={() => setShowUppy(false)} />}
 
           <DialogActions className={classes.formRow}>
             <Button onClick={closeModal} disabled={isSubmitting}>

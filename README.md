@@ -1,8 +1,8 @@
 ## General
 
-Simple app to show collection of Records. Basically a copy of https://github.com/elkebab/kits-collection.
+Simple app to show collection of Records. Basically a fork of [kits-collection](https://github.com/elkebab/kits-collection) .
 
-### [Demo](https://mokkelgjerd.no/drakter)
+### [Demo](https://mokkelgjerd.no/platesamling)
 
 ## Setup
 
